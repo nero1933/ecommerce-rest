@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# .idea
+.idea
+
+# folder to store static files while server is in dev mdoe
+/data
