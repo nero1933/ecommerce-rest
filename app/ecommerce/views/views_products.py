@@ -18,3 +18,14 @@ class ProductAPIList(ListAPIView):
     # def get_queryset(self):
     #     queryset = Product.objects.all().select_prefetch('productitem')
     #     return queryset
+
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     # context["customer_id"] = self.kwargs['customer_id']
+    #     # context["query_params"] = self.request.query_params
+    #     print(self.get_discount_price())
+    #     return context
+    #
+    # def get_discount_price(self):
+    #     price = self.get_queryset()
+    #     print(price)

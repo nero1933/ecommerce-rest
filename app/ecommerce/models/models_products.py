@@ -1,4 +1,4 @@
-import decimal
+# import decimal
 
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -28,10 +28,6 @@ class Product(models.Model):
 class ProductItem(models.Model):
     """ Model describes specific kind of product. """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__original_discount = self.discount
-
     # All sizes are located in productitem_choices.py file
     # in Utils folder
     SIZE_CHOICES = productitem_choices.SIZE_CHOICES
@@ -39,7 +35,6 @@ class ProductItem(models.Model):
 
     product = models.ForeignKey('Product', related_name='price', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
-    discount_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ], blank=True, null=True)
     SKU = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField()
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
@@ -48,23 +43,8 @@ class ProductItem(models.Model):
     discount = models.ForeignKey('Discount', on_delete=models.PROTECT, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
-    __original_discount = None
-
     def __str__(self):
         return f'{self.product} / Gender: {self.gender} / Size: {self.size}'
-
-    def save(self, *args, **kwargs):
-        """ Automatically changes 'discount_price' when new 'discount' if applied.  """
-        if self.discount != self.__original_discount:
-            try:
-                qs = Discount.objects.filter(name=self.discount).values('discount_rate')
-                discount_rate = qs[0].get('discount_rate', 0)
-                self.discount_price = self.price - (self.price * decimal.Decimal(discount_rate) / 100)
-            except (Discount.DoesNotExist, IndexError):
-                self.discount_price = self.price
-
-        super(ProductItem, self).save(*args, **kwargs)
-        self.__original_discount = self.discount
 
 
 class Image(models.Model):
