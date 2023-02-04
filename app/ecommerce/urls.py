@@ -4,5 +4,5 @@ from .views import *
 
 
 urlpatterns = [
-    path('api/v1/hello-view', HelloAPIView.as_view(), name='hello-view'),
+    path('api/v1/products', ProductAPIList.as_view(), name='products'),
 ]

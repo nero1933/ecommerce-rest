@@ -1,5 +1,5 @@
 
-# All sizes are located in this file
+# All product choices are located in this file
 
 SIZE_CHOICES = [
     ("Clothes", (
@@ -23,4 +23,9 @@ SIZE_CHOICES = [
     )
      ),
     ('unknown', 'Unknown'),
+]
+
+GENDER_CHOICES = [
+    ('M', 'Men'),
+    ('W', 'Women'),
 ]
