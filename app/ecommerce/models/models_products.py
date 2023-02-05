@@ -5,18 +5,23 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from rest_framework.reverse import reverse
 
-from ..utils import productitem_choices
+from ..utils import product_size_choices
 # from ..views import ProductAPIView
 
 
 class Product(models.Model):
     """ Model describes product. """
 
+    GENDER_CHOICES = [
+        ('M', 'Men'),
+        ('W', 'Women'),
+    ]
+
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
-    product_image = models.CharField(max_length=255, blank=True, null=True)
     brand = models.ForeignKey('Brand', related_name='product', on_delete=models.CASCADE, blank=False, null=False)
+    gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=False, null=False)
     style = models.ForeignKey('Style', on_delete=models.CASCADE, blank=False, null=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -28,28 +33,30 @@ class Product(models.Model):
 class ProductItem(models.Model):
     """ Model describes specific kind of product. """
 
-    # All sizes are located in productitem_choices.py file
-    # in Utils folder
-    SIZE_CHOICES = productitem_choices.SIZE_CHOICES
-    GENDER_CHOICES = productitem_choices.GENDER_CHOICES
-
-    product = models.ForeignKey('Product', related_name='price', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
+    product = models.ForeignKey('Product', related_name='product_item', on_delete=models.CASCADE)
+    product_image = models.ForeignKey('Image', related_name='image', on_delete=models.CASCADE, blank=True, null=True)
     SKU = models.CharField(max_length=255)
-    quantity = models.PositiveIntegerField()
-    gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
-    size = models.CharField(max_length=15, choices=SIZE_CHOICES)
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
     color = models.ForeignKey('Color', on_delete=models.CASCADE)
     discount = models.ForeignKey('Discount', on_delete=models.PROTECT, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.product} / Gender: {self.gender} / Size: {self.size}'
+        return f'{self.product.name} / Color: {self.color}'
+
+
+class ProductItemSizeAmount(models.Model):
+    """ Model describes specific kind of product. """
+
+    SIZE_CHOICES = product_size_choices.SIZE_CHOICES
+
+    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    size = models.CharField(max_length=15, choices=SIZE_CHOICES)
 
 
 class Image(models.Model):
-    """ Model for storing
-     image urls for product items. """
+    """ Model for storing image urls for products. """
 
     product = models.ForeignKey('ProductItem', on_delete=models.CASCADE, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
@@ -82,7 +89,6 @@ class Category(BaseDescription):
 
 class Brand(BaseDescription):
     """ Model contains brands. """
-
     pass
 
 
@@ -91,14 +97,14 @@ class Style(BaseDescription):
     pass
 
 
-# class Size(BaseDescription):
-# """ Model contains sizes. """
-#     pass
-
-
 class Color(BaseDescription):
     """ Model contains colors. """
     pass
+
+
+# class Temp(BaseDescription):
+#     """ Model contains temp. """
+#     pass
 
 
 class Discount(models.Model):

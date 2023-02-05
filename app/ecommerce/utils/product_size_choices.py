@@ -25,7 +25,4 @@ SIZE_CHOICES = [
     ('unknown', 'Unknown'),
 ]
 
-GENDER_CHOICES = [
-    ('M', 'Men'),
-    ('W', 'Women'),
-]
+
