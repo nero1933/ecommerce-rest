@@ -19,7 +19,10 @@ class ProductAPIList(ListAPIView):
         queryset = Product.objects.all()\
             .select_related('brand')\
             .select_related('category')\
-            .select_related('style')
+            .select_related('style')\
+            .prefetch_related('product_item')\
+            .prefetch_related('product_item__discount')
+
         return queryset
 
     def get_serializer_context(self):

@@ -23,7 +23,6 @@ class ProductItemField(serializers.ModelSerializer):
 
         # obj = productitem.select_related('Discount')
         # discount_rate = obj.discount_rate
-        print(self.data)
         discount_rate = productitem.discount.discount_rate
         discount_price = productitem.price - (productitem.price * decimal.Decimal(discount_rate) / 100)
         return str(discount_price)
@@ -36,11 +35,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-#        fields = '__all__'
-        fields = ["id", "name", "product_item", "slug", "description", "brand", "category", "style", "created"]
+        fields = '__all__'
+#        fields = ["id", "name", "product_item", "slug", "description", "brand", "category", "style", "created"]
 #        exclude = ('created', )
         depth = 1
-
-
 
 
