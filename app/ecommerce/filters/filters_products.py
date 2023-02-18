@@ -5,11 +5,17 @@ from ..models.models_products import Product, Brand, Category, Style, Color
 
 class ProductFilter(filters.FilterSet):
 
+    GENDER_CHOICES = [
+        ('M', 'Men'),
+        ('W', 'Women'),
+    ]
+
     brand = filters.ModelChoiceFilter(queryset=Brand.objects.all(), to_field_name='name')
     category = filters.ModelChoiceFilter(queryset=Category.objects.all(), to_field_name='name')
     style = filters.ModelChoiceFilter(queryset=Style.objects.all(), to_field_name='name')
-    # color = filters.ModelChoiceFilter(queryset=Color.objects.all(), to_field_name='name')
+    gender = filters.ChoiceFilter(choices=GENDER_CHOICES)
+    product_item__color = filters.ModelChoiceFilter(queryset=Color.objects.all(), to_field_name='name', label='Color')
 
     class Meta:
         model = Product
-        fields = ['brand', 'category', 'style']
+        fields = ['brand', 'category', 'style', 'product_item__color']
