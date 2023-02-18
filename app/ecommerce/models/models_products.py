@@ -112,8 +112,8 @@ class Size(models.Model):
 class ProductItemSizeQuantity(models.Model):
     """ Model describes specific kind of product. """
 
-    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='productitem_to_size')
-    size = models.ForeignKey('Size', on_delete=models.CASCADE, related_name='size_to_productitem')
+    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='productitem_sizes')
+    size = models.ForeignKey('Size', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
 

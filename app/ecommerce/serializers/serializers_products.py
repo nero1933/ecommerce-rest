@@ -7,17 +7,11 @@ from ..utils.price_counters import DiscountCalculator
 # ----- ProductAPIList --- starts ----------------------------
 
 class ProductItemSizeQuantitySerializer(serializers.ModelSerializer):
+    size = serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = ProductItemSizeQuantity
-        fields = '__all__'
-
-
-class SizeSerializer(serializers.ModelSerializer):
-    size_to_productitem = ProductItemSizeQuantitySerializer(many=True)
-    class Meta:
-        model = Size
-        fields = '__all__'
+        fields = ['id', 'size', 'quantity']
 
 
 class ProductItemSerializer(serializers.ModelSerializer):
@@ -28,13 +22,14 @@ class ProductItemSerializer(serializers.ModelSerializer):
 
     discount_price = serializers.SerializerMethodField()
     color = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    sizes = SizeSerializer(read_only=True, many=True)
+    #sizes = SizeSerializer(read_only=True, many=True)
+    productitem_sizes = ProductItemSizeQuantitySerializer(many=True)
 
     class Meta:
 
         model = ProductItem
         # fields = '__all__'
-        fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'sizes']
+        fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'productitem_sizes']
 
     @staticmethod
     def get_discount_price(obj):
