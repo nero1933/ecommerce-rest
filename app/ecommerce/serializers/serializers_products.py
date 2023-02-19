@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from ..models.models_products import Product, ProductItem, ProductItemSizeQuantity, Image
-from ..utils.product.price_counters import DiscountCalculator
+from ..utils.products.product_price_counters import DiscountCalculator
 
 
 class ProductItemSizeQuantitySerializer(serializers.ModelSerializer):

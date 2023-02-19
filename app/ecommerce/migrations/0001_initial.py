@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, null=True)),
                 ('gender', models.CharField(choices=[('M', 'Men'), ('W', 'Women')], max_length=15)),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product', to='ecommerce.brand')),
+                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='ecommerce.brand')),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ecommerce.category')),
             ],
         ),
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('color', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product_color', to='ecommerce.color')),
                 ('discount', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='ecommerce.discount')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product_item', to='ecommerce.product')),
+                ('products', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product_item', to='ecommerce.products')),
                 ('product_image', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='image', to='ecommerce.image')),
             ],
         ),
@@ -125,13 +125,13 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(related_name='product_size', through='ecommerce.ProductItemSizeQuantity', to='ecommerce.size'),
         ),
         migrations.AddField(
-            model_name='product',
+            model_name='products',
             name='style',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ecommerce.style'),
         ),
         migrations.AddField(
             model_name='image',
-            name='product',
+            name='products',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ecommerce.productitem'),
         ),
     ]

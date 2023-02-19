@@ -1,5 +1,5 @@
 
-# All product choices are located in this file
+# All products choices are located in this file
 
 SIZE_CHOICES = [
     ("Clothes", (

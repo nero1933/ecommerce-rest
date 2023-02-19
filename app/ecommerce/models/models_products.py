@@ -3,11 +3,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from rest_framework.reverse import reverse
 
-from ..utils.product import product_size_choices
+from ..utils.products import product_size_choices
 
 
 class Product(models.Model):
-    """ Model describes product. """
+    """ Model describes products. """
 
     GENDER_CHOICES = [
         ('M', 'Men'),
@@ -17,7 +17,7 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
-    brand = models.ForeignKey('Brand', related_name='product', on_delete=models.CASCADE, blank=False, null=False)
+    brand = models.ForeignKey('Brand', related_name='products', on_delete=models.CASCADE, blank=False, null=False)
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=False, null=False)
     style = models.ForeignKey('Style', on_delete=models.CASCADE, blank=False, null=False)
@@ -27,11 +27,11 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('product', kwargs={'slug': self.slug})
+        return reverse('products', kwargs={'slug': self.slug})
 
 
 class ProductItem(models.Model):
-    """ Model describes specific kind of product. """
+    """ Model describes specific kind of products. """
 
     product = models.ForeignKey('Product', related_name='product_item', on_delete=models.CASCADE)
     SKU = models.CharField(max_length=255)
@@ -112,7 +112,7 @@ class Discount(models.Model):
 
 
 class ProductItemSizeQuantity(models.Model):
-    """ Model describes specific kind of product. """
+    """ Model describes specific kind of products. """
 
     productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='product_item_sizes')
     size = models.ForeignKey('Size', on_delete=models.CASCADE)

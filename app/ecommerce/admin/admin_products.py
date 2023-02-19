@@ -29,7 +29,7 @@ class ProductItemAdmin(admin.ModelAdmin):
     model = ProductItem
     inlines = [ProductItemSizeQuantityInline, ImageInline]
 #    fields = ('price', )
-#    fields = ('product', 'price', 'discount_price', 'SKU', 'quantity', 'gender', 'size', 'color', 'discount', 'created')
+#    fields = ('products', 'price', 'discount_price', 'SKU', 'quantity', 'gender', 'size', 'color', 'discount', 'created')
 #    readonly_fields = ('discount_price', )
 
 
