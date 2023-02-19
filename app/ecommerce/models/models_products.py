@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from rest_framework.reverse import reverse
 
-from ..utils import product_size_choices
+from ..utils.product import product_size_choices
 
 
 class Product(models.Model):
@@ -34,27 +34,15 @@ class ProductItem(models.Model):
     """ Model describes specific kind of product. """
 
     product = models.ForeignKey('Product', related_name='product_item', on_delete=models.CASCADE)
-    product_image = models.ForeignKey('Image', related_name='image', on_delete=models.CASCADE, blank=True, null=True)
     SKU = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
     color = models.ForeignKey('Color', related_name='product_color', on_delete=models.CASCADE)
-    sizes = models.ManyToManyField('Size', related_name='product_size', through='ProductItemSizeQuantity')
+    sizes = models.ManyToManyField('Size', through='ProductItemSizeQuantity')
     discount = models.ForeignKey('Discount', on_delete=models.PROTECT, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.product.name} / Color: {self.color}'
-
-
-class Image(models.Model):
-    """ Model for storing image urls for products. """
-
-    product = models.ForeignKey('ProductItem', on_delete=models.CASCADE, blank=False, null=False)
-    description = models.TextField(blank=True, null=True)
-    product_image = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f'Image for: {self.product}'
 
 
 class BaseDescription(models.Model):
@@ -103,19 +91,10 @@ class Size(models.Model):
 
     SIZE_CHOICES = product_size_choices.SIZE_CHOICES
 
-    name = models.CharField(max_length=15, choices=SIZE_CHOICES)
+    name = models.CharField(max_length=15, choices=SIZE_CHOICES, unique=True)
 
     def __str__(self):
         return self.name
-
-
-class ProductItemSizeQuantity(models.Model):
-    """ Model describes specific kind of product. """
-
-    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='productitem_sizes')
-    size = models.ForeignKey('Size', on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-
 
 
 class Discount(models.Model):
@@ -130,3 +109,26 @@ class Discount(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductItemSizeQuantity(models.Model):
+    """ Model describes specific kind of product. """
+
+    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='product_item_sizes')
+    size = models.ForeignKey('Size', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f'{self.productitem}'
+
+
+class Image(models.Model):
+    """ Model for storing image urls for products. """
+
+    product = models.ForeignKey('ProductItem', related_name='product_item_image', on_delete=models.CASCADE, blank=False, null=False)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    image_url = models.URLField(max_length=255)
+    main_image = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Image for: {self.product}'

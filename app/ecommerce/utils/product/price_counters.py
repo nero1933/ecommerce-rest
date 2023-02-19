@@ -1,4 +1,4 @@
-from ..models import ProductItem
+from ecommerce.models import ProductItem
 
 
 class DiscountCalculator:
