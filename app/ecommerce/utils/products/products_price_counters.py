@@ -12,7 +12,7 @@ class DiscountCalculator:
         """
 
         if not isinstance(obj, ProductItem):
-            raise Exception()
+            raise ValueError('obj must be "ProductItem" class')
 
         if not obj.discount:
             return str(obj.price)

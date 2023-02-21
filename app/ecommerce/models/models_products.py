@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from rest_framework.reverse import reverse
 
-from ..utils.products import product_size_choices
+from ..utils.products import products_size_choices
 
 
 class Product(models.Model):
@@ -89,7 +89,7 @@ class Color(BaseDescription):
 class Size(models.Model):
     """ Model contains sizes. """
 
-    SIZE_CHOICES = product_size_choices.SIZE_CHOICES
+    SIZE_CHOICES = products_size_choices.SIZE_CHOICES
 
     name = models.CharField(max_length=15, choices=SIZE_CHOICES, unique=True)
 

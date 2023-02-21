@@ -3,6 +3,8 @@ from ...serializers.serializers_products import ProductSerializer
 
 
 class ProductAPIMixin:
+    """ Mixin for ProductAPI views """
+
     serializer_class = ProductSerializer
 
     def get_queryset(self):

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'phonenumber_field',
     'users.apps.UsersConfig',
     'ecommerce.apps.EcommerceConfig',
 ]
