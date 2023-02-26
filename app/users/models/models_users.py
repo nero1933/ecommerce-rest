@@ -5,6 +5,7 @@ from django.contrib.auth.models import BaseUserManager
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from ecommerce.models.models_shopping_cart import ShoppingCart
 from .models_addresses import Address
 
 
@@ -23,6 +24,9 @@ class UserProfileManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self.db)
 
+        # Creates a shopping cart for the user
+        ShoppingCart.objects.create(user=user)
+
         return user
 
     def create_superuser(self, email, name, phone, password):
@@ -34,6 +38,9 @@ class UserProfileManager(BaseUserManager):
         user.is_staff = True
 
         user.save(using=self.db)
+
+        # Creates a shopping cart for the user
+        ShoppingCart.objects.create(user=user)
 
         return user
 

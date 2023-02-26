@@ -2,15 +2,23 @@
 # All products choices are located in this file
 
 SIZE_CHOICES = [
+    # ("Clothes", (
+    #     ('XS', 'Extra Small'),
+    #     ('S', 'Small'),
+    #     ('M', 'Medium'),
+    #     ('L', 'Large'),
+    #     ('XL', 'Extra Large'),
+    #     ('XXL', '2Extra Large'),
+    # )
     ("Clothes", (
-        ('XS', 'Extra Small'),
-        ('S', 'Small'),
-        ('M', 'Medium'),
-        ('L', 'Large'),
-        ('XL', 'Extra Large'),
-        ('XXL', '2Extra Large'),
-    )
-     ),
+        ('XS', 'XS'),
+        ('S', 'S'),
+        ('M', 'M'),
+        ('L', 'L'),
+        ('XL', 'XL'),
+        ('XXL', 'XXL'),
+        )
+    ),
     ('Shoes', (
         ('34.5', 'EU 34.5'), ('35', 'EU 35'), ('35.5', 'EU 35.5'), ('36', 'EU 36'),
         ('36.5', 'EU 36.5'), ('37', 'EU 37'), ('37.5', 'EU 37.5'), ('38', 'EU 38'),
@@ -20,9 +28,9 @@ SIZE_CHOICES = [
         ('44.5', 'EU 44.5'), ('45', 'EU 45'), ('45.5', 'EU 45.5'), ('46', 'EU 46'),
         ('46.5', 'EU 46.5'), ('47', 'EU 47'), ('47.5', 'EU 47.5'), ('48', 'EU 48'),
         ('48.5', 'EU 48.5'), ('49', 'EU 49'), ('49.5', 'EU 49.5'), ('50', 'EU 50'),
-    )
-     ),
-    ('unknown', 'Unknown'),
+        )
+    ),
+    # ('unknown', 'Unknown'),
 ]
 
 

@@ -4,8 +4,9 @@ from ..models import Address, UserAddress, Country
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    country = serializers.SlugRelatedField(slug_field='name', queryset=Country.objects.all())
-    country_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    # country = serializers.SlugRelatedField(slug_field='name', queryset=Country.objects.all())
+    # country_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    country_id = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
 
     class Meta:
         model = Address
@@ -15,11 +16,11 @@ class AddressSerializer(serializers.ModelSerializer):
                   'street',
                   'unit_number',
                   'country_id',
-                  'country',
                   'region',
                   'city',
                   'post_code',
-                  'phone']
+                  'phone',
+                  ]
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
@@ -37,9 +38,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
         # https://www.django-rest-framework.org/api-guide/serializers/#writing-create-methods-for-nested-representations
         # Writable nested representations
         address_data = validated_data.pop('address')
-        country = address_data.pop('country')
-
-        address = Address.objects.create(country=country, **address_data)
+        country = address_data.pop('country_id')
+        address = Address.objects.create(country_id=country.pk, **address_data)
         return UserAddress.objects.create(address=address, **validated_data)
 
     def update(self, instance, validated_data):
@@ -59,7 +59,14 @@ class UserAddressSerializer(serializers.ModelSerializer):
         address.region = address_data.get('region', address.region)
         address.post_code = address_data.get('post_code', address.post_code)
         address.phone = address_data.get('phone', address.phone)
-        address.country = address_data.pop('country')
+        address.country_id = address_data.get('country_id', address.country)
         address.save()
 
         return instance
+
+
+class CountrySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Country
+        fields = '__all__'

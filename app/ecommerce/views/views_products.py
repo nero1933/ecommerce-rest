@@ -1,15 +1,27 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import viewsets
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 from ..filters.filters_products import ProductFilter
-from ..utils.products.products_mixins import ProductAPIMixin
+from ..models.models_products import Product
+from ..serializers.serializers_products import ProductSerializer
 
 
-class ProductAPIList(ProductAPIMixin, ListAPIView):
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ProductSerializer
     filter_backends = (DjangoFilterBackend, )
     filterset_class = ProductFilter
-
-
-class ProductAPIDetailView(ProductAPIMixin, RetrieveAPIView):
     lookup_field = 'slug'
+
+    def get_queryset(self):
+        queryset = Product.objects.all()\
+            .select_related('brand')\
+            .select_related('category')\
+            .select_related('style')\
+            .prefetch_related('product_item')\
+            .prefetch_related('product_item__discount')\
+            .prefetch_related('product_item__color')\
+            .prefetch_related('product_item__product_item_sizes__size')\
+            .prefetch_related('product_item__product_item_image')
+
+        return queryset

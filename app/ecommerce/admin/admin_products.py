@@ -33,4 +33,4 @@ class ProductItemAdmin(admin.ModelAdmin):
 #    readonly_fields = ('discount_price', )
 
 
-# admin.site.register(ProductItemSizeQuantity)
+admin.site.register(ProductItemSizeQuantity)

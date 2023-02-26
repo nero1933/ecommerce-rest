@@ -46,7 +46,7 @@ class ProductItem(models.Model):
 
 
 class BaseDescription(models.Model):
-    """ Base class for all descriptions such as brand, style etc. """
+    """ Abstract class for all descriptions such as brand, style etc. """
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
@@ -114,12 +114,12 @@ class Discount(models.Model):
 class ProductItemSizeQuantity(models.Model):
     """ Model describes specific kind of products. """
 
-    productitem = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='product_item_sizes')
+    product_item = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='product_item_sizes')
     size = models.ForeignKey('Size', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
-    def __str__(self):
-        return f'{self.productitem}'
+    # def __str__(self):
+    #     return f'{self.product_item.id}'
 
 
 class Image(models.Model):

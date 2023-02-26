@@ -6,12 +6,12 @@ from ..utils.addresses.addresses_country_choices import COUNTRY_CHOICES
 
 
 class UserAddress(models.Model):
-    user = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
-    address = models.ForeignKey('Address', related_name='address', on_delete=models.PROTECT)
+    user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    address = models.ForeignKey('Address', related_name='address', on_delete=models.CASCADE)
     is_default = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user}'
+        return f'Address for: {self.user}'
 
 
 class Address(models.Model):
