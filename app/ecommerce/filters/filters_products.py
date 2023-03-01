@@ -10,29 +10,38 @@ class ProductFilter(filters.FilterSet):
         ('W', 'Women'),
     ]
 
-    brand = filters.ModelChoiceFilter(queryset=Brand.objects.all(), to_field_name='name')
-    category = filters.ModelChoiceFilter(queryset=Category.objects.all(), to_field_name='name')
-    style = filters.ModelChoiceFilter(queryset=Style.objects.all(), to_field_name='name')
+    brand = filters.ModelChoiceFilter(to_field_name='name', queryset=Brand.objects.all())
+    category = filters.ModelChoiceFilter(to_field_name='name', queryset=Category.objects.all())
+    style = filters.ModelChoiceFilter(to_field_name='name', queryset=Style.objects.all())
     gender = filters.ChoiceFilter(choices=GENDER_CHOICES)
-    product_item__color = filters.ModelChoiceFilter(queryset=Color.objects.all(), to_field_name='name', label='Color')
-    product_item__product_item_size_quantity = filters.ModelChoiceFilter(queryset=ProductItemSizeQuantity.objects.all() \
-                                                                                .select_related('product_item') \
-                                                                                .select_related('product_item__product') \
-                                                                                .select_related('product_item__color') \
-                                                                                .select_related('size'),
-                                                                         to_field_name='id',
-                                                                         label='pisq')
-    product_item__product_item_size_quantity__size = filters.ModelChoiceFilter(queryset=Size.objects.all(),
-                                                                               to_field_name='name',
-                                                                               label='Size')
+    product_item__color = filters.ModelChoiceFilter(to_field_name='name', label='Color', queryset=Color.objects.all())
+
+    product_item__product_item_size_quantity__size = \
+        filters.ModelChoiceFilter(
+            to_field_name='name',
+            label='Size',
+            queryset=Size.objects.all(),
+        )
+
+    product_item__product_item_size_quantity = \
+        filters.ModelChoiceFilter(
+            to_field_name='id',
+            label='pisq',
+            queryset=ProductItemSizeQuantity.objects.all()
+            .select_related('product_item')
+            .select_related('product_item__product')
+            .select_related('product_item__color')
+            .select_related('size'),
+        )
 
 
     class Meta:
         model = Product
         fields = ['brand',
+                  'gender',
                   'category',
                   'style',
                   'product_item__color',
-                  'product_item__product_item_size_quantity',
                   'product_item__product_item_size_quantity__size',
+                  'product_item__product_item_size_quantity',
                   ]

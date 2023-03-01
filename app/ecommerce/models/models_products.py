@@ -125,10 +125,10 @@ class ProductItemSizeQuantity(models.Model):
 class Image(models.Model):
     """ Model for storing image urls for products. """
 
-    product = models.ForeignKey('ProductItem', related_name='product_item_image', on_delete=models.CASCADE, blank=False, null=False)
+    product_item = models.ForeignKey('ProductItem', related_name='product_item_image', on_delete=models.CASCADE, blank=False, null=False)
     description = models.CharField(max_length=255, blank=True, null=True)
     image_url = models.URLField(max_length=255)
     main_image = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Image for: {self.product}'
+        return f'Image for: {self.product_item}'

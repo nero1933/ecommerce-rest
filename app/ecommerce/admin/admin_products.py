@@ -9,7 +9,6 @@ admin.site.register(Style)
 admin.site.register(Color)
 admin.site.register(Size)
 admin.site.register(Discount)
-admin.site.register(Image)
 
 
 class ProductItemSizeQuantityInline(admin.TabularInline):
@@ -48,3 +47,14 @@ class ProductItemSizeQuantityAdmin(admin.ModelAdmin):
             .select_related('product_item__product') \
             .select_related('product_item__color') \
             .select_related('size')
+
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    model = Image
+
+    def get_queryset(self, request):
+        return Image.objects.all() \
+            .select_related('product_item') \
+            .select_related('product_item__product') \
+            .select_related('product_item__color')
