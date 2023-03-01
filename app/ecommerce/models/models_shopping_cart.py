@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 
 class ShoppingCart(models.Model):
@@ -11,4 +12,4 @@ class ShoppingCart(models.Model):
 class ShoppingCartItem(models.Model):
     cart = models.ForeignKey('ShoppingCart', related_name='shopping_cart', on_delete=models.CASCADE)
     product_item_size_quantity = models.ForeignKey('ProductItemSizeQuantity', on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])

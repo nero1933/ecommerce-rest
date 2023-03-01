@@ -20,8 +20,9 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
             .select_related('style')\
             .prefetch_related('product_item')\
             .prefetch_related('product_item__discount')\
-            .prefetch_related('product_item__color')\
-            .prefetch_related('product_item__product_item_sizes__size')\
+            .prefetch_related('product_item__color') \
+            .prefetch_related('product_item__product_item_size_quantity')\
+            .prefetch_related('product_item__product_item_size_quantity__size') \
             .prefetch_related('product_item__product_item_image')
 
         return queryset

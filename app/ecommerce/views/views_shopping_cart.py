@@ -1,10 +1,8 @@
 from rest_framework import viewsets
 from rest_framework import generics
 
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 
-from ..filters.filters_products import ProductFilter
 from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
 from ..serializers.serializers_shopping_cart import ShoppingCartItemSerializer, ShoppingCartSerializer
 
@@ -31,6 +29,8 @@ class ShoppingCartAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ShoppingCart.objects.filter(user=self.request.user) \
-            .prefetch_related('shopping_cart') \
-            .select_related('user')
+        queryset = ShoppingCart.objects.filter(user=self.request.user) \
+            .select_related('user') \
+            .prefetch_related('shopping_cart')
+
+        return queryset

@@ -36,14 +36,14 @@ class ProductItemSerializer(serializers.ModelSerializer):
 
     discount_price = serializers.SerializerMethodField()
     color = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    product_item_sizes = ProductItemSizeQuantitySerializer(many=True)
+    product_item_size_quantity = ProductItemSizeQuantitySerializer(many=True)
     product_item_image = ImageSerializer(many=True, read_only=True)
 
     class Meta:
 
         model = ProductItem
         # fields = '__all__'
-        fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'product_item_sizes', 'product_item_image']
+        fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'product_item_size_quantity', 'product_item_image']
 
     @staticmethod
     def get_discount_price(obj):

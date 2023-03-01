@@ -1,17 +1,17 @@
 from rest_framework import serializers
 
-from ..models import ProductItemSizeQuantity
 from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
-from ..utils.shopping_cart.shopping_cart import ShoppingCartUtil
+from ..utils.shopping_cart.shopping_cart import ShoppingCartItemUtil
 
-class ShoppingCartItemSerializer(serializers.ModelSerializer):
+
+class ShoppingCartItemSerializer(serializers.ModelSerializer, ShoppingCartItemUtil):
 
     class Meta:
         model = ShoppingCartItem
         fields = ['id', 'quantity', 'cart_id', 'product_item_size_quantity']
 
     def create(self, validated_data):
-        return ShoppingCartUtil.create_or_update_duplicate(
+        return self.create_or_update_duplicate(
             self,
             self.context['user'],
             ShoppingCart,
@@ -23,7 +23,7 @@ class ShoppingCartItemSerializer(serializers.ModelSerializer):
         quantity = validated_data.pop('quantity')
         product_item_size_quantity = validated_data.pop('product_item_size_quantity', instance.product_item_size_quantity)
 
-        instance.quantity = ShoppingCartUtil.check_stock_quantity(
+        instance.quantity = self.check_stock_quantity(
             ShoppingCartItem.objects.get(pk=instance.pk),
             product_item_size_quantity,
             quantity,

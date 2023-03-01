@@ -1,11 +1,9 @@
-from django.db.models.query_utils import DeferredAttribute
-
-
-class ShoppingCartUtil:
+class ShoppingCartItemUtil:
     """  """
-    @classmethod
+
+    # @classmethod
     def create_or_update_duplicate(
-            cls,
+            self,
             serializer,
             user,
             shopping_cart,
@@ -32,10 +30,10 @@ class ShoppingCartUtil:
 
         for item in cart_items:
             if product_item_size_quantity == item.product_item_size_quantity: # If product is in cart
-                item.quantity = cls.check_stock_quantity(item, product_item_size_quantity, quantity, create=False)
+                item.quantity = self.check_stock_quantity(item, product_item_size_quantity, quantity, create=False)
                 return serializer.update(item, item.__dict__)
 
-        quantity = cls.check_stock_quantity(None, product_item_size_quantity, quantity, create=True)
+        quantity = self.check_stock_quantity(None, product_item_size_quantity, quantity, create=True)
         return shopping_cart_item.objects.create(
             cart=cart,
             product_item_size_quantity=product_item_size_quantity,
@@ -58,6 +56,3 @@ class ShoppingCartUtil:
             return total_quantity
 
         return stock_quantity
-
-
-
