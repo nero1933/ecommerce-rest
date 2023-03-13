@@ -40,6 +40,7 @@ class ProductItemAdmin(admin.ModelAdmin):
 @admin.register(ProductItemSizeQuantity)
 class ProductItemSizeQuantityAdmin(admin.ModelAdmin):
     model = ProductItemSizeQuantity
+#    list_select_related = ('product_item', 'product_item__product', 'product_item__color', 'size')
 
     def get_queryset(self, request):
         return ProductItemSizeQuantity.objects.all() \

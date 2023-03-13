@@ -7,7 +7,7 @@ from .views.views_shopping_cart import ShoppingCartItemViewSet, ShoppingCartAPIV
 
 router = routers.SimpleRouter()
 router.register('products', ProductViewSet, basename='products')
-router.register('shopping_cart_items', ShoppingCartItemViewSet, basename='shopping_cart')
+router.register('shopping_cart_items', ShoppingCartItemViewSet, basename='shopping_cart_items')
 
 urlpatterns = [
     path('api/v1/', include(router.urls)),

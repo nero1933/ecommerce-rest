@@ -120,6 +120,7 @@ class ProductItemSizeQuantity(models.Model):
 
     def __str__(self):
         return f'{self.product_item} / Size: {self.size}'
+        #return f'Size: {self.size}'
 
 
 class Image(models.Model):
