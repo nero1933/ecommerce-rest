@@ -118,7 +118,7 @@ class Command(BaseCommand):
 
                 for size in ('44', '44.5', '45'):
                     ProductItemSizeQuantity.objects.create(
-                        productitem=temp,
+                        produc_titem=temp,
                         size=Size.objects.get(name=Size.objects.get(name=size)),
                         quantity=10,
                     )
@@ -135,7 +135,7 @@ class Command(BaseCommand):
 
                 for size in ('S', 'M', 'L'):
                     ProductItemSizeQuantity.objects.create(
-                        productitem=temp,
+                        produc_titem=temp,
                         size=Size.objects.get(name=Size.objects.get(name=size)),
                         quantity=50,
                     )

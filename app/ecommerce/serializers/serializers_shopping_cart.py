@@ -5,20 +5,18 @@ from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
 from ..utils.shopping_cart.shopping_cart import ShoppingCartItemUtil
 
 
-class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializer, ):
-    product_item_size_quantity = serializers.PrimaryKeyRelatedField(queryset=
-                                                                    ProductItemSizeQuantity.objects.all()
-                                                                    .select_related('size',
-                                                                                    'product_item',
-                                                                                    'product_item__product',
-                                                                                    'product_item__color')
-                                                                    )
+class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializer):
+    product_item_size_quantity = serializers.PrimaryKeyRelatedField(
+        queryset=ProductItemSizeQuantity.objects.all()
+        .select_related('size',
+                        'product_item',
+                        'product_item__product',
+                        'product_item__color')
+    )
 
     class Meta:
         model = ShoppingCartItem
-        fields = ['id', 'quantity', 'cart_id', 'product_item_size_quantity']
-
-
+        fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity']
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
