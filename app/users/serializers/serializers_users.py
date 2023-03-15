@@ -3,24 +3,20 @@ from ..models import UserProfile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ['email', 'name', 'password', 'password2']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ('id', 'email', 'name', 'phone', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
-    def save(self):
-        user = UserProfile(email=self.validated_data['email'], date_of_birth=self.validated_data['name'])
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
-        if password != password2:
-            raise serializers.ValidationError({'password': 'Passwords must match.'})
+    def create(self, validated_data):
+        user = UserProfile.objects.create_user(
+            validated_data['email'],
+            validated_data['name'],
+            validated_data['phone'],
+            validated_data['password']
+        )
 
-        user.set_password(password)
-        user.save()
         return user
 
 
