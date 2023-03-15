@@ -11,12 +11,15 @@ class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializ
         .select_related('size',
                         'product_item',
                         'product_item__product',
-                        'product_item__color')
+                        'product_item__color'),
     )
 
     class Meta:
         model = ShoppingCartItem
         fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity']
+
+class ShoppingCartItemTwoSerializer(ShoppingCartItemSerializer):
+    product_item_size_quantity = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

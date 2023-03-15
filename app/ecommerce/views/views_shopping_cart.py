@@ -7,13 +7,14 @@ from rest_framework.utils import json
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
-from ..serializers.serializers_shopping_cart import ShoppingCartItemSerializer, ShoppingCartSerializer
+from ..serializers.serializers_shopping_cart import ShoppingCartItemSerializer, ShoppingCartSerializer, \
+    ShoppingCartItemTwoSerializer
 
 
 class ShoppingCartItemViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingCartItemSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         return ShoppingCartItem.objects.filter(cart__user=self.request.user)
@@ -22,6 +23,13 @@ class ShoppingCartItemViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['user'] = self.request.user
         return context
+
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.action == 'update':
+            serializer_class = ShoppingCartItemTwoSerializer
+
+        return serializer_class
 
 
 class ShoppingCartAPIView(generics.ListAPIView):
