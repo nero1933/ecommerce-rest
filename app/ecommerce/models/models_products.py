@@ -37,7 +37,6 @@ class ProductItem(models.Model):
     SKU = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
     color = models.ForeignKey('Color', related_name='product_color', on_delete=models.CASCADE)
-    sizes = models.ManyToManyField('Size', through='ProductItemSizeQuantity')
     discount = models.ForeignKey('Discount', on_delete=models.PROTECT, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -86,15 +85,15 @@ class Color(BaseDescription):
 #     pass
 
 
-class Size(models.Model):
-    """ Model contains sizes. """
-
-    SIZE_CHOICES = products_size_choices.SIZE_CHOICES
-
-    name = models.CharField(max_length=15, choices=SIZE_CHOICES, unique=True)
-
-    def __str__(self):
-        return self.name
+# class Size(models.Model):
+#     """ Model contains sizes. """
+#
+#     SIZE_CHOICES = products_size_choices.SIZE_CHOICES
+#
+#     name = models.CharField(max_length=15, choices=SIZE_CHOICES, unique=True)
+#
+#     def __str__(self):
+#         return self.name
 
 
 class Discount(models.Model):
@@ -114,8 +113,10 @@ class Discount(models.Model):
 class ProductItemSizeQuantity(models.Model):
     """ Model describes specific kind of products. """
 
+    SIZE_CHOICES = products_size_choices.SIZE_CHOICES
+
     product_item = models.ForeignKey('ProductItem', on_delete=models.CASCADE, related_name='product_item_size_quantity')
-    size = models.ForeignKey('Size', on_delete=models.CASCADE)
+    size = models.CharField(max_length=15, choices=SIZE_CHOICES)
     quantity = models.PositiveIntegerField()
 
     def __str__(self):

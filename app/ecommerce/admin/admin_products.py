@@ -7,7 +7,6 @@ admin.site.register(Category)
 admin.site.register(Brand)
 admin.site.register(Style)
 admin.site.register(Color)
-admin.site.register(Size)
 admin.site.register(Discount)
 
 
@@ -46,8 +45,7 @@ class ProductItemSizeQuantityAdmin(admin.ModelAdmin):
         return ProductItemSizeQuantity.objects.all() \
             .select_related('product_item') \
             .select_related('product_item__product') \
-            .select_related('product_item__color') \
-            .select_related('size')
+            .select_related('product_item__color')
 
 
 @admin.register(Image)

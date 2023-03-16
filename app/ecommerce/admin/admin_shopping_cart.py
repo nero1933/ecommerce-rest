@@ -29,7 +29,6 @@ class ShoppingCartItemAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = ShoppingCartItem.objects.all() \
-            .select_related('product_item_size_quantity') \
-            .select_related('product_item_size_quantity__size') \
+            .select_related('product_item_size_quantity')
 
         return queryset

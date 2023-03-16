@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from ..models.models_addresses import UserAddress, Country
-from ..serializers.serializers_addresses import UserAddressSerializer, CountrySerializer
+from ..models.models_addresses import UserAddress
+from ..serializers.serializers_addresses import UserAddressSerializer
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -16,6 +16,6 @@ class AddressViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class CountryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Country.objects.all().order_by('id')
-    serializer_class = CountrySerializer
+# class CountryViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = Country.objects.all().order_by('id')
+#     serializer_class = CountrySerializer

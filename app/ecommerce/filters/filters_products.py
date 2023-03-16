@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from ..models.models_products import Product, Brand, Category, Style, Color, Size, ProductItemSizeQuantity
+from ..models.models_products import Product, Brand, Category, Style, Color, ProductItemSizeQuantity
 
 
 class ProductFilter(filters.FilterSet):
@@ -16,12 +16,12 @@ class ProductFilter(filters.FilterSet):
     gender = filters.ChoiceFilter(choices=GENDER_CHOICES)
     product_item__color = filters.ModelChoiceFilter(to_field_name='name', label='Color', queryset=Color.objects.all())
 
-    product_item__product_item_size_quantity__size = \
-        filters.ModelChoiceFilter(
-            to_field_name='name',
-            label='Size',
-            queryset=Size.objects.all(),
-        )
+    # product_item__product_item_size_quantity__size = \
+    #     filters.ModelChoiceFilter(
+    #         to_field_name='name',
+    #         label='Size',
+    #         queryset=Size.objects.all(),
+    #     )
 
     product_item__product_item_size_quantity = \
         filters.ModelChoiceFilter(

@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 
 from users.models import UserProfile
 from ecommerce.models import ShoppingCartItem, ShoppingCart, Product, Brand, Category, Style, ProductItem, Color, \
-    ProductItemSizeQuantity, Size
+    ProductItemSizeQuantity
 
 
 class TestShoppingCartItem(APITestCase):
@@ -46,18 +46,15 @@ class TestShoppingCartItem(APITestCase):
             color=Color.objects.get(name='white'),
         )
 
-        Size.objects.create(name='M')
-        Size.objects.create(name='L')
-
         ProductItemSizeQuantity.objects.create(
             product_item=ProductItem.objects.get(SKU='000001'),
-            size=Size.objects.get(name='M'),
+            size='M',
             quantity=100,
         )
 
         ProductItemSizeQuantity.objects.create(
             product_item=ProductItem.objects.get(SKU='000001'),
-            size=Size.objects.get(name='L'),
+            size='L',
             quantity=50,
         )
 

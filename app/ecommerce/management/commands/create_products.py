@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from slugify import slugify
 
-from ...models import Product, ProductItem, Brand, Category, Style, Color, ProductItemSizeQuantity, Size
+from ...models import Product, ProductItem, Brand, Category, Style, Color, ProductItemSizeQuantity
 
 
 class Command(BaseCommand):
@@ -118,8 +118,8 @@ class Command(BaseCommand):
 
                 for size in ('44', '44.5', '45'):
                     ProductItemSizeQuantity.objects.create(
-                        produc_titem=temp,
-                        size=Size.objects.get(name=Size.objects.get(name=size)),
+                        product_item=temp,
+                        size=size,
                         quantity=10,
                     )
 
@@ -135,8 +135,8 @@ class Command(BaseCommand):
 
                 for size in ('S', 'M', 'L'):
                     ProductItemSizeQuantity.objects.create(
-                        produc_titem=temp,
-                        size=Size.objects.get(name=Size.objects.get(name=size)),
+                        product_item=temp,
+                        size=size,
                         quantity=50,
                     )
 

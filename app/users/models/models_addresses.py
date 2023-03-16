@@ -19,7 +19,7 @@ class Address(models.Model):
     surname = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
     unit_number = models.CharField(max_length=255, blank=True, null=True)
-    country = models.ForeignKey('Country', related_name='country', on_delete=models.PROTECT)
+    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, unique=True)
     region = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     post_code = models.PositiveIntegerField()
@@ -29,8 +29,8 @@ class Address(models.Model):
         return f'{self.city}, {self.street}'
 
 
-class Country(models.Model):
-    name = models.CharField(max_length=50, choices=COUNTRY_CHOICES, unique=True)
-
-    def __str__(self):
-        return f'{self.name}'
+# class Country(models.Model):
+#     name = models.CharField(max_length=50, choices=COUNTRY_CHOICES, unique=True)
+#
+#     def __str__(self):
+#         return f'{self.name}'

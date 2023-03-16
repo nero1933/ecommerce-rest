@@ -8,8 +8,7 @@ from ..utils.shopping_cart.shopping_cart import ShoppingCartItemUtil
 class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializer):
     product_item_size_quantity = serializers.PrimaryKeyRelatedField(
         queryset=ProductItemSizeQuantity.objects.all()
-        .select_related('size',
-                        'product_item',
+        .select_related('product_item',
                         'product_item__product',
                         'product_item__color'),
     )

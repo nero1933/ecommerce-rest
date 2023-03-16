@@ -10,7 +10,7 @@ class ProductItemSizeQuantitySerializer(serializers.ModelSerializer):
     model for displaying them in 'ProductItemSerializer' serializer.
     """
 
-    size = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    #size = serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = ProductItemSizeQuantity

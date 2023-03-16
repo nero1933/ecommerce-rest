@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from ..models import Address, UserAddress, Country
+from ..models import Address, UserAddress
 
 
 class AddressSerializer(serializers.ModelSerializer):
     # country = serializers.SlugRelatedField(slug_field='name', queryset=Country.objects.all())
     # country_id = serializers.PrimaryKeyRelatedField(read_only=True)
-    country_id = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
+    # country_id = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
 
     class Meta:
         model = Address
@@ -65,8 +65,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
         return instance
 
 
-class CountrySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Country
-        fields = '__all__'
+# class CountrySerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Country
+#         fields = '__all__'
