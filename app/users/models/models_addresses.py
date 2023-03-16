@@ -27,10 +27,3 @@ class Address(models.Model):
 
     def __str__(self):
         return f'{self.city}, {self.street}'
-
-
-# class Country(models.Model):
-#     name = models.CharField(max_length=50, choices=COUNTRY_CHOICES, unique=True)
-#
-#     def __str__(self):
-#         return f'{self.name}'
