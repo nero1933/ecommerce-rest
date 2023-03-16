@@ -18,7 +18,7 @@ class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializ
         model = ShoppingCartItem
         fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity']
 
-class ShoppingCartItemTwoSerializer(ShoppingCartItemSerializer):
+class ShoppingCartItemUpdateSerializer(ShoppingCartItemSerializer):
     product_item_size_quantity = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
 
