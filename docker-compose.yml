@@ -20,6 +20,8 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
+      - STRIPE_PUBLIC_KEY=pk_test_51MmacmFv5L004Kkji5BOV1YiH7RmbGj3IF5AdyD1BvmO9AgwflkKTzV2hho4P8Hw0lFZkIGQWcwgKRs7XHQajxNg00QZDSO1lH
+      - STRIPE_PRIVATE_KEY=sk_test_51MmacmFv5L004KkjB9d0Xkb93WgXZqiRDZViz2eapQoVggb7MEutCC64iHFU7yoKcC2dVH9uDybpKsobHRCLQjI000SSBIMwKY
     depends_on:
       - db
 

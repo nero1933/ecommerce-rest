@@ -12,10 +12,11 @@ class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializ
                         'product_item__product',
                         'product_item__color'),
     )
+    item_price = serializers.ReadOnlyField()
 
     class Meta:
         model = ShoppingCartItem
-        fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity']
+        fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity', 'item_price']
 
 class ShoppingCartItemUpdateSerializer(ShoppingCartItemSerializer):
     product_item_size_quantity = serializers.PrimaryKeyRelatedField(many=False, read_only=True)

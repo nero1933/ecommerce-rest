@@ -8,7 +8,7 @@ from .views.views_users import *
 
 router = routers.SimpleRouter()
 router.register(r'addresses', AddressViewSet, basename='addresses')
-# router.register(r'countries', CountryViewSet, basename='countries')
+# router.register(r'payment_method', PaymentMethodViewSet, basename='payment_method')
 
 urlpatterns = [
     path('api/v1/accounts/register', RegistrationAPIView.as_view(), name='register'),

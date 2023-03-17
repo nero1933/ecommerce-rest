@@ -31,7 +31,6 @@ class ProductFilter(filters.FilterSet):
             .select_related('product_item')
             .select_related('product_item__product')
             .select_related('product_item__color')
-            .select_related('size'),
         )
 
 
