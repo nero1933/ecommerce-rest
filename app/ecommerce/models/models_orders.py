@@ -39,5 +39,6 @@ class OrderItem(models.Model):
 class ShippingMethod(models.Model):
     delivery_company_name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return f'{self.delivery_company_name}'
+    # def __str__(self):
+    #     return f'{self.delivery_company_name}'
+

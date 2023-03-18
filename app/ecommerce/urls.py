@@ -13,5 +13,6 @@ router.register('shopping_cart_items', ShoppingCartItemViewSet, basename='shoppi
 urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/shopping_cart/', ShoppingCartAPIView.as_view(), name='shopping_cart'),
-    path('api/v1/create_order/', CreateOrder.as_view(), name='create_order')
+    path('api/v1/create_order/', CreateOrder.as_view(), name='create_order'),
+
 ]

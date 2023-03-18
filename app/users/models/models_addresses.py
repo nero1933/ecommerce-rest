@@ -25,5 +25,5 @@ class Address(models.Model):
     post_code = models.PositiveIntegerField()
     phone = PhoneNumberField()
 
-    def __str__(self):
-        return f'{self.city}, {self.street}'
+    # def __str__(self):
+    #     return f'{self.city}, {self.street}'

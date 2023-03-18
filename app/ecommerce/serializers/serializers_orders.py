@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from ..models.models_orders import Order, OrderItem
+from users.models.models_addresses import Address, UserAddress
+from ..models.models_orders import Order, OrderItem, ShippingMethod
 from ..utils.orders.serializers_default import OrdersPriceDefault
 
 
@@ -11,9 +12,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'user', 'payment_method', 'shipping_address', 'shipping_method', 'order_price']
-
-    def get_order_price(self, obj):
-        return self.context['order_price']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
