@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
 from rest_framework import generics
 from rest_framework.generics import GenericAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -21,15 +22,15 @@ class CreateOrder(CreateAPIView):
     def post(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         order_id = response.data["id"]
-        self.cart_to_order(order_id)
-        self.get_queryset().delete() # drop shopping cart
+        self.cart_to_order(order_id) # create OrderItem instances from ShoppingCartItem instances for current user
+        self.get_queryset().delete() # remove all ShoppingCartItem instances for current user
         return response
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         print('hi')
-        #context['order_price'] = self.get_order_price()
-        context['order_price'] = 1
+        order_price = self.get_order_price()
+        context['order_price'] = order_price
         return context
 
     def get_order_price(self) -> decimal.Decimal:
