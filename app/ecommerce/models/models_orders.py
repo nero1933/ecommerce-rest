@@ -17,10 +17,10 @@ class Order(models.Model):
         (3, 'Bank transfer'),
     )
 
-    user = models.ForeignKey('users.UserProfile', on_delete=models.PROTECT)
+    user = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
     order_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=16, choices=PAYMENT_METHODS, default=1)
-    shipping_address = models.ForeignKey('users.Address', on_delete=models.PROTECT)
+    shipping_address = models.ForeignKey('Address', on_delete=models.PROTECT)
     shipping_method = models.ForeignKey('ShippingMethod', on_delete=models.PROTECT)
     order_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
     order_status = models.CharField(max_length=15, choices=ORDER_STATUS_CHOICES, default=1)

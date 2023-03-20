@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_filters',
     'phonenumber_field',
-    'users.apps.UsersConfig',
     'ecommerce.apps.EcommerceConfig',
 ]
 
@@ -206,7 +205,7 @@ MEDIA_ROOT = 'vol/web/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.UserProfile'
+AUTH_USER_MODEL = 'ecommerce.UserProfile'
 
 if DEBUG:
     import socket  # only if you haven't already imported this

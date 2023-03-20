@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import  Response
 from rest_framework.views import APIView
 
+from ..serializers.serializers_users import RegistrationSerializer, PasswordChangeSerializer
 from ..utils.users import get_tokens_for_user
-from ..serializers import RegistrationSerializer, PasswordChangeSerializer
 
 
 class RegistrationAPIView(APIView):

@@ -1,9 +1,7 @@
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIRequestFactory
 
-from users.models import UserProfile
-from ecommerce.models import ShoppingCartItem, ShoppingCart, Product, Brand, Category, Style, ProductItem, Color, \
-    ProductItemSizeQuantity
+from ..models import UserProfile, Product, Brand, Category, Style, ProductItem, Color, ProductItemSizeQuantity
 
 
 class TestShoppingCartItem(APITestCase):

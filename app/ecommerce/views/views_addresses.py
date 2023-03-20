@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from ..models.models_addresses import UserAddress
-from ..serializers.serializers_addresses import UserAddressSerializer
+from ecommerce.models.models_addresses import UserAddress
+from ecommerce.serializers.serializers_addresses import UserAddressSerializer
 
 
 class AddressViewSet(viewsets.ModelViewSet):

@@ -4,7 +4,7 @@ Django command to wait for the database to be available.
 
 from django.core.management.base import BaseCommand
 
-from users.utils.addresses.addresses_country_choices import COUNTRY_CHOICES
+from ecommerce.utils.addresses.addresses_country_choices import COUNTRY_CHOICES
 from users.models import Country
 
 
