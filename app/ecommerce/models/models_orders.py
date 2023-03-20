@@ -30,7 +30,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', related_name='order_item', on_delete=models.CASCADE)
     product_item_size_quantity = models.ForeignKey('ProductItemSizeQuantity', on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1), ])
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])

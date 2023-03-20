@@ -3,7 +3,7 @@ from rest_framework import serializers
 from ..models.models_orders import Order, OrderItem, ShippingMethod
 
 
-class CreateOrderSerializer(serializers.ModelSerializer):
+class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -18,4 +18,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = '__all__'
+        fields = ['id', 'product_item_size_quantity', 'quantity', 'price']
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    order_item = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'payment_method', 'shipping_address', 'shipping_method', 'order_item']

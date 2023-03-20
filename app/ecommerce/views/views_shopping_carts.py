@@ -27,7 +27,7 @@ class ShoppingCartItemViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
-class ShoppingCartAPIView(generics.ListAPIView):
+class ShoppingCartAPIView(generics.RetrieveAPIView):
     serializer_class = ShoppingCartSerializer
     permission_classes = [IsAuthenticated]
 
