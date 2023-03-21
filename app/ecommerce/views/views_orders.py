@@ -1,15 +1,15 @@
 from django.shortcuts import redirect
 
+from rest_framework import viewsets
 from rest_framework.reverse import reverse
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
 import decimal
 
-
 from ..models.models_orders import Order, OrderItem
 from ..models.models_shopping_cart import ShoppingCartItem
-from ..serializers.serializers_orders import OrderCreateSerializer, OrderDetailSerializer
+from ..serializers.serializers_orders import OrderCreateSerializer, OrderSerializer
 
 
 class OrderCreateAPIView(CreateAPIView):
@@ -63,8 +63,9 @@ class OrderCreateAPIView(CreateAPIView):
         )
 
 
-class OrderDetailAPIView(RetrieveAPIView):
-    serializer_class = OrderDetailSerializer
+class OrderReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated, ]
     lookup_field = 'pk'
 
     def get_queryset(self):
@@ -72,4 +73,3 @@ class OrderDetailAPIView(RetrieveAPIView):
             .prefetch_related('order_item')
 
         return queryset
-

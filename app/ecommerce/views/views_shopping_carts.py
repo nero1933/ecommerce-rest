@@ -30,6 +30,7 @@ class ShoppingCartItemViewSet(viewsets.ModelViewSet):
 class ShoppingCartAPIView(generics.RetrieveAPIView):
     serializer_class = ShoppingCartSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'user_id'
 
     def get_queryset(self):
         queryset = ShoppingCart.objects.filter(user=self.request.user) \

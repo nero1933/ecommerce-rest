@@ -14,8 +14,3 @@ class AddressViewSet(viewsets.ModelViewSet):
             .select_related('address')
 
         return queryset
-
-
-# class CountryViewSet(viewsets.ReadOnlyModelViewSet):
-#     queryset = Country.objects.all().order_by('id')
-#     serializer_class = CountrySerializer

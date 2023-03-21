@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from .serializers_revews import ReviewSerializer
+from ..models.models_reviews import Review
 from ..models.models_products import Product, ProductItem, ProductItemSizeQuantity, Image
 from ..utils.products.products_price_counters import DiscountCalculator
 
@@ -65,10 +67,11 @@ class ProductSerializer(serializers.ModelSerializer):
     brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
     style = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
 #        fields = '__all__'
-        fields = ["id", "name", "product_item", "slug", "description", "brand", "category", "style", "gender", "created"]
+        fields = ["id", "name", "product_item", "slug", "description", "brand", "category", "style", "gender", "created", "reviews"]
 #        exclude = ('created', )
 #        depth = 1

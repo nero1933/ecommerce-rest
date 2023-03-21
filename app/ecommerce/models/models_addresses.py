@@ -2,7 +2,7 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from ecommerce.utils.addresses.addresses_country_choices import COUNTRY_CHOICES
+from ..utils.addresses.addresses_country_choices import COUNTRY_CHOICES
 
 
 class UserAddress(models.Model):

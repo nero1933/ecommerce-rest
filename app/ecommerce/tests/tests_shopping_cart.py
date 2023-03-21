@@ -1,7 +1,4 @@
-from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase
-
-from ..models import Product, Brand, Category, Style, ProductItem, Color, ProductItemSizeQuantity
+from ..models import ProductItem, ProductItemSizeQuantity
 from ..utils.tests.tests_mixins import TestMixin
 
 
@@ -10,41 +7,6 @@ class TestShoppingCartItem(TestMixin):
     def setUp(self) -> None:
         self.create_user()
         self.create_products()
-
-        # Brand.objects.create(name='nike', slug='nike')
-        # Category.objects.create(name='t-shirt', slug='t-shirt')
-        # Style.objects.create(name='sport', slug='sport')
-        #
-        # Product.objects.create(
-        #     name='nike t-shirt',
-        #     slug='nike_t-shirt',
-        #     description='1',
-        #     brand=Brand.objects.get(name='nike'),
-        #     gender='Men',
-        #     category=Category.objects.get(name='t-shirt'),
-        #     style=Style.objects.get(name='sport'),
-        # )
-        #
-        # Color.objects.create(name='white', slug='white')
-        #
-        # ProductItem.objects.create(
-        #     product=Product.objects.get(slug='nike_t-shirt'),
-        #     SKU='000001',
-        #     price='29',
-        #     color=Color.objects.get(name='white'),
-        # )
-        #
-        # ProductItemSizeQuantity.objects.create(
-        #     product_item=ProductItem.objects.get(SKU='000001'),
-        #     size='M',
-        #     quantity=100,
-        # )
-        #
-        # ProductItemSizeQuantity.objects.create(
-        #     product_item=ProductItem.objects.get(SKU='000001'),
-        #     size='L',
-        #     quantity=50,
-        # )
 
     def test_shopping_cart_duplicates(self):
         url_name = 'shopping_cart_items-list'
