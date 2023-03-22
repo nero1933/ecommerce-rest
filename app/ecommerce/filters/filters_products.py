@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters
 
 from ..models.models_products import Product, Brand, Category, Style, Color, ProductItemSizeQuantity
-
+from ..utils.products.products_size_choices import SIZE_CHOICES
 
 class ProductFilter(filters.FilterSet):
 
@@ -26,6 +26,12 @@ class ProductFilter(filters.FilterSet):
             .select_related('product_item__color')
         )
 
+    product_item__product_item_size_quantity__size = \
+        filters.ChoiceFilter(
+            choices=SIZE_CHOICES,
+            label='Size',
+            distinct=True,
+        )
 
     class Meta:
         model = Product
