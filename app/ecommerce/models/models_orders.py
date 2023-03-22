@@ -18,11 +18,11 @@ class Order(models.Model):
 
     user = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
     order_date = models.DateTimeField(auto_now_add=True)
-    payment_method = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderMethods], default=OrderMethods.CASH_ON_DELIVERY)
+    payment_method = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderMethods], default=1)
     shipping_address = models.ForeignKey('Address', on_delete=models.PROTECT)
     shipping_method = models.ForeignKey('ShippingMethod', on_delete=models.PROTECT)
     order_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
-    order_status = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderStatus], default=OrderStatus.NEW)
+    order_status = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderStatus], default=1)
 
     def __str__(self):
         return f"{self.user}'s order / {self.order_date}"

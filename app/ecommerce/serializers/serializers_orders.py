@@ -11,7 +11,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'payment_method', 'shipping_address', 'shipping_method']
 
     def create(self, validated_data):
-        return Order.objects.create(order_price=self.context['order_price'], **validated_data)
+        return Order.objects.create(order_price=self.context['order_price'],  **validated_data)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

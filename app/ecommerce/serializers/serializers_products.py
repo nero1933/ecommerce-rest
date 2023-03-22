@@ -57,21 +57,30 @@ class ProductItemSerializer(serializers.ModelSerializer):
         return DiscountCalculator.get_discount_price(obj)
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductListSerializer(serializers.ModelSerializer):
+
+    brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    style = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    product_item = ProductItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item"]
+
+
+class ProductRetrieveSerializer(serializers.ModelSerializer):
     """
     Displays values from 'Product' model and particular form 'ProductItem' model.
     Values are show in 'ProductAPIList' view.
     """
 
-    product_item = ProductItemSerializer(many=True, read_only=True)
     brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
     style = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    product_item = ProductItemSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
-#        fields = '__all__'
-        fields = ["id", "name", "product_item", "slug", "description", "brand", "category", "style", "gender", "created", "reviews"]
-#        exclude = ('created', )
-#        depth = 1
+        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item", "reviews"]

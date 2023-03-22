@@ -38,7 +38,7 @@ class TestOrderCreate(TestMixin):
         }
 
         response = self.get_response('POST', 'create_order', data, follow=True) # create order
-        self.assertEqual(response.redirect_chain, [('/api/v1/accounts/orders/1', 302)], "Request must redirect to '/api/v1/accounts/orders/1' with 302 code")
+        self.assertEqual(response.redirect_chain, [('/api/v1/accounts/orders/1/', 302)], "Request must redirect to '/api/v1/accounts/orders/1' with 302 code")
         self.assertEqual(response.status_code, 200, 'Order must be successfully created') # !!! change to 201 when redirect
         self.assertEqual(response.data['order_item'][0]['price'], '58.00', 'Price of first order item must be "58.00"')
         self.assertEqual(response.data['order_item'][1]['price'], '119.00', 'Price of second order item must be "119.00"')

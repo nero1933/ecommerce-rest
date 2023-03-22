@@ -1,3 +1,4 @@
+from django.db import connections
 from django.shortcuts import redirect
 
 from rest_framework import viewsets
@@ -9,11 +10,12 @@ import decimal
 
 from ..models.models_orders import Order, OrderItem
 from ..models.models_shopping_cart import ShoppingCartItem
+from ..permissions.permissoins_orders import NotEmptyShoppingCart
 from ..serializers.serializers_orders import OrderCreateSerializer, OrderSerializer
 
 
 class OrderCreateAPIView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, NotEmptyShoppingCart]
     serializer_class = OrderCreateSerializer
 
     def post(self, request, *args, **kwargs):
@@ -21,7 +23,7 @@ class OrderCreateAPIView(CreateAPIView):
         order_id = response.data["id"]
         self._cart_to_order(order_id) # create OrderItem instances from ShoppingCartItem instances for current user
         self.get_queryset().delete() # remove all ShoppingCartItem instances for current user
-        return redirect(reverse('order', kwargs={"pk": order_id}))
+        return redirect(reverse('orders-detail', kwargs={"pk": order_id}))
 
     def get_queryset(self):
         """ Queryset contains all users shopping cart items. """

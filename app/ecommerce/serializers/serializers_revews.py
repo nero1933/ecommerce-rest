@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Product, ProductItemSizeQuantity, OrderItem
+from ..models import OrderItem
 from ..models.models_reviews import Review
 
 
@@ -9,17 +9,19 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('user', 'rating_value', 'comment')
+        fields = ('id', 'user', 'rating_value', 'comment')
 
 
 class ReviewCreateSerializer(ReviewSerializer):
     def create(self, validated_data):
+        product, order_item = self.get_related_objects()
+        return Review.objects.create(product=product,
+                                     order_item=order_item,
+                                     **validated_data)
+
+    def get_related_objects(self):
         order_item = OrderItem.objects\
-            .select_related('product_item_size_quantity')\
-            .get(pk=self.context['ordered_item_id'])
-
-        pisq = ProductItemSizeQuantity.objects\
-            .select_related('product_item', 'product_item__product')\
-            .get(pk=order_item.product_item_size_quantity.pk)
-
-        return Review.objects.create(product=pisq.product_item.product, order_item=order_item, **validated_data)
+            .select_related('product_item_size_quantity__product_item__product')\
+            .get(pk=self.context['order_item_id'])
+        product = order_item.product_item_size_quantity.product_item.product
+        return product, order_item
