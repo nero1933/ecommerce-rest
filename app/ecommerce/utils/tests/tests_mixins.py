@@ -1,39 +1,41 @@
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from ecommerce.models import UserProfile, Address, ShippingMethod, Brand, Category, Style, Product, Color, ProductItem, \
-    ProductItemSizeQuantity
+    ProductItemSizeQuantity, ShoppingCart, ShoppingCartItem
 
 
 class TestMixin(APITestCase):
 
-    def create_user(self):
-        self.user = UserProfile.objects \
-            .create_user(email='tests@tests.com',
+    def create_user(self, email):
+        user = UserProfile.objects \
+            .create_user(email=email,
                          name='tests',
                          phone='+380951112233',
                          password='123456'
                          )
 
-        self.user_data = {
-            "email": "tests@tests.com",
-            "password": "123456"
-        }
+        user_data = {"email": email, "password": "123456"}
+
+        return user, user_data
+
 
     def create_address(self):
-        Address.objects.create(
-            name='r',
-            surname='n',
-            street='dm 15',
-            country='Ukraine',
-            region='ch',
-            city='ch',
-            post_code=49000,
-            phone='+380956663321',
-        )
+        self.address_1 = \
+            Address.objects.create(
+                name='r',
+                surname='n',
+                street='dm 15',
+                country='Ukraine',
+                region='ch',
+                city='ch',
+                post_code=49000,
+                phone='+380956663321',
+                )
 
     def create_shipping_method(self):
-        ShippingMethod.objects.create(delivery_company_name='DHL')
+        self.shipping_method_1 = ShippingMethod.objects.create(delivery_company_name='DHL')
 
     def create_products(self):
         Brand.objects.create(name='nike', slug='nike')
@@ -81,54 +83,92 @@ class TestMixin(APITestCase):
             color=Color.objects.get(name='black'),
         )
 
-        ProductItemSizeQuantity.objects.create(
+        # nike t-shirt / Color: white / Size: M / Quantity: 100
+        self.pisq_1 = ProductItemSizeQuantity.objects.create(
             product_item=ProductItem.objects.get(SKU='000001'),
             size='M',
             quantity=100,
         )
 
-        ProductItemSizeQuantity.objects.create(
+        # nike t-shirt / Color: black / Size: M / Quantity: 50
+        self.pisq_2 = ProductItemSizeQuantity.objects.create(
             product_item=ProductItem.objects.get(SKU='000001'),
             size='L',
             quantity=50,
         )
 
-        ProductItemSizeQuantity.objects.create(
+        # puma hoodie / Color: black / Size: M / Quantity: 50
+        self.pisq_3 = ProductItemSizeQuantity.objects.create(
             product_item=ProductItem.objects.get(SKU='000010'),
             size='M',
             quantity=50,
         )
 
-    def get_token(self):
-        response = self.client.post(reverse('token_obtain_pair'), self.user_data, format='json')
+    def get_token(self, user_data):
+        response = self.client.post(reverse('token_obtain_pair'), user_data, format='json')
         self.assertEqual(response.status_code, 200, 'The token should be successfully returned.')
 
         return response.data['access']
 
+    def fill_shopping_cart(self, user, user_data, items=3):
+        self.get_token(user_data)
+        cart = ShoppingCart.objects.get(user=user)
 
-    def get_response(self, method, url_name, data=None, detail=None, **kwargs):
+
+        if items >= 1:
+            ShoppingCartItem.objects.create(cart=cart,
+                                            product_item_size_quantity=self.pisq_1,
+                                            quantity=1,
+                                            item_price=self.pisq_1.product_item.price,
+                                            )
+        if items >= 2:
+            ShoppingCartItem.objects.create(cart=cart,
+                                            product_item_size_quantity=self.pisq_2,
+                                            quantity=1,
+                                            item_price=self.pisq_2.product_item.price,
+                                            )
+        if items >= 3:
+            ShoppingCartItem.objects.create(cart=cart,
+                                            product_item_size_quantity=self.pisq_3,
+                                            quantity=1,
+                                            item_price=self.pisq_3.product_item.price,
+                                            )
+
+    def create_order(self, user_data):
+        data = {
+            "payment_method": 1,
+            "shipping_address": self.address_1.pk,
+            "shipping_method": self.shipping_method_1.pk,
+        }
+
+        res = self.get_response('POST', 'create_order', data=data, user_data=user_data, follow=True)
+        print()
+        print(f'RESPONSE: {res.data}')
+
+    def get_response(self, method, url_name, reverse_kwargs=None, data=None, user_data=None, **kwargs):
+        # if user_data is None:
+        #     user_data = self.user_data
+
         if data is None:
             data = {}
 
         if method == 'GET':
-            return self.client.get(reverse(url_name),
+            return self.client.get(reverse(url_name, kwargs=reverse_kwargs),
                                    data,
-                                   HTTP_AUTHORIZATION=f'Bearer {self.get_token()}',
+                                   HTTP_AUTHORIZATION=f'Bearer {self.get_token(user_data)}',
                                    format='json',
-                                   **kwargs
-                                   )
+                                   **kwargs)
         elif method == 'POST':
-            return self.client.post(reverse(url_name),
+            return self.client.post(reverse(url_name, kwargs=reverse_kwargs),
                                     data,
-                                    HTTP_AUTHORIZATION=f'Bearer {self.get_token()}',
+                                    HTTP_AUTHORIZATION=f'Bearer {self.get_token(user_data)}',
                                     format='json',
-                                    **kwargs
-                                    )
+                                    **kwargs)
         elif method == 'PUT':
-            return self.client.put(reverse(url_name, kwargs=detail),
+            return self.client.put(reverse(url_name, kwargs=reverse_kwargs),
                                    data,
-                                   HTTP_AUTHORIZATION=f'Bearer {self.get_token()}',
+                                   HTTP_AUTHORIZATION=f'Bearer {self.get_token(user_data)}',
                                    format='json',
-                                   **kwargs
-                                   )
+                                   **kwargs)
+
         return None

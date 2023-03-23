@@ -5,7 +5,7 @@ from ..utils.tests.tests_mixins import TestMixin
 class TestOrderCreate(TestMixin):
 
     def setUp(self) -> None:
-        self.create_user()
+        self.user, self.user_data = self.create_user('tests@tests.com')
         self.create_address()
         self.create_shipping_method()
         self.create_products()
@@ -13,22 +13,18 @@ class TestOrderCreate(TestMixin):
     def test_create_order(self):
         url_name = 'shopping_cart_items-list'
         data1 = {
-            "product_item_size_quantity":
-                ProductItemSizeQuantity.objects.get(
-                    product_item=ProductItem.objects.get(SKU='000001'), size='M').pk,
+            "product_item_size_quantity": self.pisq_1.pk,
             "quantity": 2
         }
         data2 = {
-            "product_item_size_quantity":
-                ProductItemSizeQuantity.objects.get(
-                    product_item=ProductItem.objects.get(SKU='000010')).pk,
+            "product_item_size_quantity": self.pisq_3.pk,
             "quantity": 1
         }
 
-        response = self.get_response('POST', url_name, data1) # add to shopping cart first item
+        response = self.get_response('POST', url_name, data=data1) # add to shopping cart first item
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
-        response = self.get_response('POST', url_name, data2) # add to shopping cart second item
+        response = self.get_response('POST', url_name, data=data2) # add to shopping cart second item
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
         data = {
@@ -37,7 +33,7 @@ class TestOrderCreate(TestMixin):
             "shipping_method": 1,
         }
 
-        response = self.get_response('POST', 'create_order', data, follow=True) # create order
+        response = self.get_response('POST', 'create_order', data=data, follow=True) # create order
         self.assertEqual(response.redirect_chain, [('/api/v1/accounts/orders/1/', 302)], "Request must redirect to '/api/v1/accounts/orders/1' with 302 code")
         self.assertEqual(response.status_code, 200, 'Order must be successfully created') # !!! change to 201 when redirect
         self.assertEqual(response.data['order_item'][0]['price'], '58.00', 'Price of first order item must be "58.00"')

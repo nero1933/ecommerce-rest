@@ -1,3 +1,6 @@
+from rest_framework import serializers
+from rest_framework.response import Response
+
 from ecommerce.models import ShoppingCart, ShoppingCartItem, ProductItem
 
 
@@ -22,6 +25,11 @@ class ShoppingCartItemUtil:
                 item.delete()
 
         quantity = self._check_quantity(product_item_size_quantity, quantity)
+        # When user tries to order a product which is out of stock
+        # 'quantity' will be equal to 0 after 'self._check_quantity()' method
+        # will run (if 'quantity' > 'is_stock' than 'quantity' = 'is_stock').
+        if not quantity:
+            raise serializers.ValidationError("Unable to add an item to shopping cart due to out of stock")
 
         return ShoppingCartItem.objects.create(
             cart=cart,

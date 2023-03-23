@@ -26,11 +26,10 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
                               'product_item',
                               'product_item__discount',
                               'product_item__color',
-                              'product_item__product_item_image'
-                              ) \
-            .prefetch_related(Prefetch('product_item__product_item_size_quantity',
-                                       queryset=ProductItemSizeQuantity.objects.filter(quantity__gt=0)))
-
+                              'product_item__product_item_image',
+                              Prefetch('product_item__product_item_size_quantity',
+                                       queryset=ProductItemSizeQuantity.objects.filter(quantity__gt=0))
+                              )
 
         return queryset
 

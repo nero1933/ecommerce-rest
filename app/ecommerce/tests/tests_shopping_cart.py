@@ -5,24 +5,23 @@ from ..utils.tests.tests_mixins import TestMixin
 class TestShoppingCartItem(TestMixin):
 
     def setUp(self) -> None:
-        self.create_user()
+        self.user, self.user_data = self.create_user('tests@tests.com')
         self.create_products()
 
     def test_shopping_cart_duplicates(self):
         url_name = 'shopping_cart_items-list'
         data = {
-            "product_item_size_quantity": ProductItemSizeQuantity.objects.get(
-                product_item=ProductItem.objects.get(SKU='000001'), size='M').pk,
+            "product_item_size_quantity": self.pisq_1.pk,
             "quantity": 1
         }
 
         response = self.get_response('GET', url_name)
         self.assertEqual(response.status_code, 200, 'Shopping cart must be displayed to authorized users')
 
-        response = self.get_response('POST', url_name, data)
+        response = self.get_response('POST', url_name, data=data)
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
-        response = self.get_response('POST', url_name, data)
+        response = self.get_response('POST', url_name, data=data)
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
         response = self.get_response('GET', url_name)
@@ -33,20 +32,18 @@ class TestShoppingCartItem(TestMixin):
     def test_shopping_cart_create_quantity(self):
         url_name = 'shopping_cart_items-list'
         data1 = {
-           "product_item_size_quantity": ProductItemSizeQuantity.objects.get(
-               product_item=ProductItem.objects.get(SKU='000001'), size='M').pk,
+           "product_item_size_quantity": self.pisq_1.pk,
            "quantity": 1000
         }
         data2 = {
-           "product_item_size_quantity": ProductItemSizeQuantity.objects.get(
-               product_item=ProductItem.objects.get(SKU='000001'), size='L').pk,
+           "product_item_size_quantity": self.pisq_2.pk,
            "quantity": 1000
         }
 
-        response = self.get_response('POST', url_name, data1)
+        response = self.get_response('POST', url_name, data=data1)
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
-        response = self.get_response('POST', url_name, data2)
+        response = self.get_response('POST', url_name, data=data2)
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
         response = self.get_response('GET', url_name)
@@ -59,25 +56,35 @@ class TestShoppingCartItem(TestMixin):
         url_name = 'shopping_cart_items-list'
         url_name_for_update = 'shopping_cart_items-detail'
         data = {
-           "product_item_size_quantity": ProductItemSizeQuantity.objects.get(
-               product_item=ProductItem.objects.get(SKU='000001'), size='M').pk,
+           "product_item_size_quantity": self.pisq_1.pk,
            "quantity": 1
         }
         data_for_update = {
-           "product_item_size_quantity": ProductItemSizeQuantity.objects.get(
-               product_item=ProductItem.objects.get(SKU='000001'), size='L').pk,
+           "product_item_size_quantity": self.pisq_2.pk,
            "quantity": 1000
         }
 
-        response = self.get_response('POST', url_name, data)
+        response = self.get_response('POST', url_name, data=data)
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
-        detail = {'pk': response.data['id']}
+        reverse_kwargs = {'pk': response.data['id']}
 
-        response = self.get_response('PUT', url_name_for_update, data_for_update, detail)
+        response = self.get_response('PUT', url_name_for_update, data=data_for_update, reverse_kwargs=reverse_kwargs)
         self.assertEqual(response.status_code, 200, 'Product must be successfully updated')
-        self.assertEqual(response.data['quantity'], 100, 'Quantity must de equal to 50')
+        self.assertEqual(response.data['quantity'], 100, 'Quantity must de equal to 100')
 
-        response = self.get_response('GET', url_name, data)
+        response = self.get_response('GET', url_name)
         self.assertEqual(response.status_code, 200, 'Product must be successfully added')
-        self.assertEqual(response.data[0]['quantity'], 100, 'Quantity must de equal to 50')
+        self.assertEqual(response.data[0]['quantity'], 100, 'Quantity must de equal to 100')
+
+    def test_add_out_of_stock_item(self):
+        url_name = 'shopping_cart_items-list'
+        self.pisq_1.quantity = 0 # out of stock
+        self.pisq_1.save()
+        data = {
+           "product_item_size_quantity": self.pisq_1.pk,
+           "quantity": 1
+        }
+
+        response = self.get_response('POST', url_name, data=data)
+        self.assertEqual(response.status_code, 400, "Product can't be added due to out of stock")
