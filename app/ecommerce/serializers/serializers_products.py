@@ -16,20 +16,15 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image_url', 'description', 'main_image']
 
 
-class ProductItemSizeQuantityField(serializers.RelatedField):
-    def to_representation(self, value):
-        return f'{value.size}'
+class ProductItemSizeQuantitySerializer(serializers.ModelSerializer):
+    """
+    Serializes 'id', 'size' and 'quantity' fields from 'ProductItemSizeQuantity'
+    model for displaying them in 'ProductItemSerializer' serializer.
+    """
 
-
-# class ProductItemSizeQuantitySerializer(serializers.ModelSerializer):
-#     """
-#     Serializes 'id', 'size' and 'quantity' fields from 'ProductItemSizeQuantity'
-#     model for displaying them in 'ProductItemSerializer' serializer.
-#     """
-#
-#     class Meta:
-#         model = ProductItemSizeQuantity
-#         fields = ['id', 'size', 'quantity']
+    class Meta:
+        model = ProductItemSizeQuantity
+        fields = ['id', 'size', 'quantity']
 
 
 class ProductItemSerializer(serializers.ModelSerializer):
@@ -41,13 +36,12 @@ class ProductItemSerializer(serializers.ModelSerializer):
     discount_price = serializers.SerializerMethodField()
     color = serializers.SlugRelatedField(slug_field='name', read_only=True)
     product_item_image = ImageSerializer(many=True, read_only=True)
-    # field 'product_item_size_quantity' is added to be able to use it in filters
-    product_item_size_quantity = ProductItemSizeQuantityField(many=True, read_only=True)
+    product_item_size_quantity =ProductItemSizeQuantitySerializer(many=True, read_only=True)
 
     class Meta:
-
         model = ProductItem
         fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'product_item_size_quantity', 'product_item_image']
+
 
     @staticmethod
     def get_discount_price(obj):
