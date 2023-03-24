@@ -13,8 +13,8 @@ router_accounts.register(r'shopping_cart_items', ShoppingCartItemViewSet, basena
 router_accounts.register(r'addresses', AddressViewSet, basename='addresses')
 router_accounts.register(r'orders', OrderReadOnlyViewSet, basename='orders')
 
-# router_reviews = routers.SimpleRouter()
-# router_reviews.register(r'reviews', ReviewReadOnlyViewSet, basename='reviews')
+router_read_reviews = routers.SimpleRouter()
+router_read_reviews.register(r'reviews', ReviewReadOnlyViewSet, basename='read_reviews')
 
 # router.register(r'payment_method', PaymentMethodViewSet, basename='payment_method')
 
@@ -37,6 +37,6 @@ urlpatterns = [
     path('api/v1/accounts/', include(router_accounts.urls)),
 
     path('api/v1/', include(router.urls)),
-    path('api/v1/products/<slug:product_slug>/', include(router_reviews.urls)),
+    path('api/v1/products/<slug:product_slug>/', include(router_read_reviews.urls)),
 
 ]

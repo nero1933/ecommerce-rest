@@ -1,19 +1,15 @@
-from django.contrib.auth.models import AnonymousUser
-from django.db import connection
-
-from rest_framework import viewsets, status, generics
-from rest_framework.generics import CreateAPIView
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from ..models import OrderItem, Order
 from ..models.models_reviews import Review
-from ..permissions.permissions_reviews import IsCreatorOrReadOnly, IsReviewAllowed
+from ..paginations.paginations_reviews import ReviewPagination
+from ..permissions.permissions_reviews import IsReviewAllowed
 from ..serializers.serializers_revews import ReviewSerializer, ReviewCreateSerializer
 
 
 class ReviewReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ReviewSerializer
+    pagination_class = ReviewPagination
 
     def get_queryset(self):
         product_slug = self.kwargs['product_slug']
@@ -35,8 +31,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             context['order_id'] = self.kwargs['order_id']
             context['order_item_id'] = self.kwargs['order_item_id']
-        print(f'LEN: {len(connection.queries)}')
-        #[print(x) for x in connection.queries]
+            context['user'] = self.request.user
+        # print(f'LEN: {len(connection.queries)}')
         return context
 
     def get_queryset(self):

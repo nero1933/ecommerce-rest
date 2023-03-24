@@ -22,7 +22,7 @@ class IsReviewAllowed(BasePermission):
     message = 'You must be a customer who has purchased the product to comment.'
 
     def has_permission(self, request, view):
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+        if request.method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
             obj = Order.objects\
                 .prefetch_related('order_item')\
                 .filter(pk=view.kwargs['order_id'],
@@ -32,6 +32,3 @@ class IsReviewAllowed(BasePermission):
                         )
 
             return obj.exists()
-
-        elif request.method in ['GET']:
-            return True

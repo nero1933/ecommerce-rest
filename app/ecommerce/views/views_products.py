@@ -8,7 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from ..filters.filters_products import ProductFilter
 from ..models.models_products import Product, ProductItemSizeQuantity
-from ..paginations.paginatioins_products import ProductPagination
+from ..paginations.paginations_products import ProductPagination
 from ..serializers.serializers_products import ProductListSerializer, ProductRetrieveSerializer
 
 

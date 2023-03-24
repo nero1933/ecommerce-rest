@@ -5,7 +5,7 @@ from ..models.models_reviews import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta:
         model = Review
@@ -15,7 +15,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 class ReviewCreateSerializer(ReviewSerializer):
     def create(self, validated_data):
         product, order_item = self.get_related_objects()
-        return Review.objects.create(product=product,
+        return Review.objects.create(user=self.context['user'],
+                                     product=product,
                                      order_item=order_item,
                                      **validated_data)
 

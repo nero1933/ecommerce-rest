@@ -9,6 +9,9 @@ from ..utils.products import products_size_choices
 class Product(models.Model):
     """ Model describes products. """
 
+    class Meta:
+        ordering = ('-date_created',)
+
     GENDER_CHOICES = [
         ('M', 'Men'),
         ('W', 'Women'),
@@ -21,7 +24,7 @@ class Product(models.Model):
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=False, null=False)
     style = models.ForeignKey('Style', on_delete=models.CASCADE, blank=False, null=False)
-    created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

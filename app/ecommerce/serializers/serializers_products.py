@@ -63,11 +63,11 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
     style = serializers.SlugRelatedField(slug_field='name', read_only=True)
     product_item = ProductItemSerializer(many=True, read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True)
+    #reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item", "reviews"]
+        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item"]
 
 
 class ProductListSerializer(serializers.ModelSerializer):

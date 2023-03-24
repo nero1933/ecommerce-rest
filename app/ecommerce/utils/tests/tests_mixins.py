@@ -46,7 +46,7 @@ class TestMixin(APITestCase):
         Category.objects.create(name='hoodie', slug='hoodie')
         Style.objects.create(name='casual', slug='casual')
 
-        Product.objects.create(
+        self.p1 = Product.objects.create(
             name='nike t-shirt',
             slug='nike_t-shirt',
             description='1',
@@ -56,7 +56,7 @@ class TestMixin(APITestCase):
             style=Style.objects.get(name='sport'),
         )
 
-        Product.objects.create(
+        self.p2 = Product.objects.create(
             name='puma hoodie',
             slug='puma_hoodie',
             description='1',
@@ -141,13 +141,14 @@ class TestMixin(APITestCase):
             "shipping_method": self.shipping_method_1.pk,
         }
 
-        res = self.get_response('POST', 'create_order', data=data, user_data=user_data, follow=True)
-        print()
-        print(f'RESPONSE: {res.data}')
+        response = self.get_response('POST', 'create_order', data=data, user_data=user_data, follow=True)
+        order_id = response.data['id']
+        order_item_id = [item['id'] for item in response.data['order_item']]
+        return order_id, order_item_id
 
     def get_response(self, method, url_name, reverse_kwargs=None, data=None, user_data=None, **kwargs):
-        # if user_data is None:
-        #     user_data = self.user_data
+        if user_data is None:
+            user_data = self.user_data
 
         if data is None:
             data = {}
