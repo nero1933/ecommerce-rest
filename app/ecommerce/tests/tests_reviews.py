@@ -80,13 +80,37 @@ class TestReviews(TestMixin):
         self.assertEqual(response.data['results'][0]['comment'], 'bad',
                          "'comment' must be equal to 'bad', see self.data in setUp")
 
-    #
-    # def test_update_review1(self):
-    #     # Try to update review by user who isn't creator of this review.
-    #     # Must be restricted
-    #     pass
-    #
-    # def test_update_review2(self):
-    #     # Try to update review by user who is creator of this review.
-    #     # Must be successful
-    #     pass
+
+    def test_update_review1(self):
+        # Try to update review by user who isn't creator of this review.
+        # Must be restricted
+
+        reverse_kwargs = {'order_id': self.user_order_id, 'order_item_id': self.user_order_item_id[0]}
+        data = {'rating_value': 5, 'comment': 'perfect'}
+        order = Order.objects.get(pk=self.user_order_id)
+        order.order_status = 4  # 4 is Done
+        order.save()
+
+        r = self.get_response('POST', self.url, reverse_kwargs=reverse_kwargs, data=self.data)  # review is created by user1
+        reverse_kwargs['pk'] = r.data['id']
+
+        response = self.get_response('PUT', 'reviews-detail', reverse_kwargs=reverse_kwargs, data=data, user_data=self.user_data2)
+        self.assertEqual(response.status_code, 403, "User can't update reviews which he didn't create")
+
+    def test_update_review2(self):
+        # Try to update review by user who is creator of this review.
+        # Must be successful
+
+        reverse_kwargs = {'order_id': self.user_order_id, 'order_item_id': self.user_order_item_id[0]}
+        data = {'rating_value': 5, 'comment': 'perfect'}
+        order = Order.objects.get(pk=self.user_order_id)
+        order.order_status = 4  # 4 is Done
+        order.save()
+
+        r = self.get_response('POST', self.url, reverse_kwargs=reverse_kwargs, data=self.data)  # review is created by user1
+        reverse_kwargs['pk'] = r.data['id']
+
+        response = self.get_response('PUT', 'reviews-detail', reverse_kwargs=reverse_kwargs, data=data)
+        self.assertEqual(response.status_code, 200, "User must have ability to update reviews his reviews")
+        self.assertEqual(response.data['rating_value'], 5, "'rating_value' must be equal to 5")
+        self.assertEqual(response.data['comment'], 'perfect', "'comment' must be 'perfect'")
