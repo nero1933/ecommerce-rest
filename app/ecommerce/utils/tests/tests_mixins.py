@@ -119,19 +119,16 @@ class TestMixin(APITestCase):
             ShoppingCartItem.objects.create(cart=cart,
                                             product_item_size_quantity=self.pisq_1,
                                             quantity=1,
-                                            item_price=self.pisq_1.product_item.price,
                                             )
         if items >= 2:
             ShoppingCartItem.objects.create(cart=cart,
                                             product_item_size_quantity=self.pisq_2,
                                             quantity=1,
-                                            item_price=self.pisq_2.product_item.price,
                                             )
         if items >= 3:
             ShoppingCartItem.objects.create(cart=cart,
                                             product_item_size_quantity=self.pisq_3,
                                             quantity=1,
-                                            item_price=self.pisq_3.product_item.price,
                                             )
 
     def create_order(self, user_data):

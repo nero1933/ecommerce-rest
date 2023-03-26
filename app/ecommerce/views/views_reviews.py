@@ -13,7 +13,6 @@ class ReviewReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         product_slug = self.kwargs['product_slug']
-        print(self.request.method)
         return Review.objects.filter(product__slug=product_slug)
 
     def get_serializer_context(self):

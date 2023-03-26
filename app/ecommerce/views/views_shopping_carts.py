@@ -12,7 +12,10 @@ class ShoppingCartItemViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ShoppingCartItem.objects.filter(cart__user=self.request.user)
+        return ShoppingCartItem.objects \
+            .select_related('product_item_size_quantity') \
+            .prefetch_related('product_item_size_quantity__product_item') \
+            .filter(cart__user=self.request.user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

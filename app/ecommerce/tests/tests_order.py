@@ -11,6 +11,9 @@ class TestOrderCreate(TestMixin):
         self.create_products()
 
     def test_create_order(self):
+        # Try to fill in shopping cart and create order
+        # must be created successfully
+
         url_name = 'shopping_cart_items-list'
         data1 = {
             "product_item_size_quantity": self.pisq_1.pk,

@@ -28,8 +28,10 @@ class OrderCreateAPIView(CreateAPIView):
     def get_queryset(self):
         """ Queryset contains all users shopping cart items. """
 
-        queryset = ShoppingCartItem.objects.filter(cart__user=self.request.user) \
-            .select_related('product_item_size_quantity')
+        queryset = ShoppingCartItem.objects \
+            .select_related('product_item_size_quantity') \
+            .prefetch_related('product_item_size_quantity__product_item') \
+            .filter(cart__user=self.request.user)
 
         return queryset
 
@@ -44,8 +46,9 @@ class OrderCreateAPIView(CreateAPIView):
     def _get_order_price(self) -> decimal.Decimal:
         """ Calculates total price of the order. """
 
-        price = sum([item.quantity * item.item_price for item in self.get_queryset()])
-        return price
+        return sum([
+            cart_item.product_item_size_quantity.product_item.price * cart_item.quantity
+            for cart_item in self.get_queryset()])
 
     def _cart_to_order(self, order_id):
         """
@@ -59,11 +62,10 @@ class OrderCreateAPIView(CreateAPIView):
                 order=order,
                 product_item_size_quantity=cart_item.product_item_size_quantity,
                 quantity=cart_item.quantity,
-                price=cart_item.item_price * cart_item.quantity, # calculates total price
+                price=cart_item.product_item_size_quantity.product_item.price * cart_item.quantity, # calculates total price
             )
             for cart_item in self.get_queryset()
         )
-
 
 class OrderReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OrderSerializer

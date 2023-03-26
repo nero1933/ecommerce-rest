@@ -16,7 +16,6 @@ class ShoppingCartItemUtil:
 
         user = self.context['user']
         cart = ShoppingCart.objects.get(user=user)
-        item_price = ProductItem.objects.get(product_item_size_quantity=product_item_size_quantity).price
         cart_items = ShoppingCartItem.objects.filter(cart=cart).select_related('product_item_size_quantity')
 
         for item in cart_items:
@@ -35,7 +34,6 @@ class ShoppingCartItemUtil:
             cart=cart,
             product_item_size_quantity=product_item_size_quantity,
             quantity=quantity,
-            item_price=item_price,
             **validated_data
         )
 

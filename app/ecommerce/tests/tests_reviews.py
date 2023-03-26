@@ -1,3 +1,5 @@
+import logging
+
 from ..models import *
 from ..utils.tests.tests_mixins import TestMixin
 
