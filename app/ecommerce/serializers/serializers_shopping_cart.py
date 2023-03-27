@@ -12,17 +12,21 @@ class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializ
                         'product_item__product',
                         'product_item__color'),
     )
-    item_price = serializers.ReadOnlyField()
-    price = serializers.SerializerMethodField()
+    item_price = serializers.SerializerMethodField()
+    discount_price = serializers.SerializerMethodField()
 
     class Meta:
         model = ShoppingCartItem
-        fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity', 'item_price', 'price']
+        fields = ['id', 'cart_id', 'product_item_size_quantity', 'quantity', 'item_price', 'discount_price']
 
-    def get_price(self, obj):
-        product_item_price = obj.product_item_size_quantity.product_item.price
+    def get_item_price(self, obj):
+        return obj.product_item_size_quantity.product_item.item_price * obj.quantity
+
+    def get_discount_price(self, obj):
+        product_item_price = obj.product_item_size_quantity.product_item.get_price()
         price = obj.quantity * product_item_price
-        return price
+        return round(price, 2)
+
 
 class ShoppingCartItemUpdateSerializer(ShoppingCartItemSerializer):
     product_item_size_quantity = serializers.PrimaryKeyRelatedField(many=False, read_only=True)

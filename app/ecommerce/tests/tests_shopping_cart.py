@@ -31,7 +31,7 @@ class TestShoppingCartItem(TestMixin):
         self.assertEqual(response.status_code, 200, 'Shopping cart items must be displayed to authorized users')
         self.assertEqual(len(response.data), 1, 'There must be only one product')
         self.assertEqual(response.data[0]['quantity'], 2, "'quantity' must be equal to 2")
-        self.assertEqual(response.data[0]['price'], 58.00, "'price' must be equal to 58.00")
+        self.assertEqual(response.data[0]['item_price'], 58.00, "'price' must be equal to 58.00")
 
     def test_shopping_cart_create_quantity(self):
         # Try to create quantity of product in shopping cart to 1000

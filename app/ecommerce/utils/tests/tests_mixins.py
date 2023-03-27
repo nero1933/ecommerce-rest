@@ -1,9 +1,8 @@
-from django.contrib.auth import authenticate, login, logout
-from rest_framework.reverse import reverse
+from datetime import datetime, timezone
+
 from rest_framework.test import APITestCase
 
-from ecommerce.models import UserProfile, Address, ShippingMethod, Brand, Category, Style, Product, Color, ProductItem, \
-    ProductItemSizeQuantity, ShoppingCart, ShoppingCartItem
+from ecommerce.models import *
 
 
 class TestMixin(APITestCase):
@@ -37,6 +36,19 @@ class TestMixin(APITestCase):
     def create_shipping_method(self):
         self.shipping_method_1 = ShippingMethod.objects.create(delivery_company_name='DHL')
 
+    def create_discount(self):
+        start_date = datetime(2023, 3, 27, 11, 2, 40, 742332, timezone.utc)
+        end_date = datetime(2023, 12, 31, 0, 0, 0, tzinfo=timezone.utc)
+
+        self.discount_1 = Discount.objects.create(
+            name='New Discount',
+            description='A new discount',
+            discount_rate=20,
+            is_active=True,
+            start_date=start_date,
+            end_date=end_date
+        )
+
     def create_products(self):
         Brand.objects.create(name='nike', slug='nike')
         Category.objects.create(name='t-shirt', slug='t-shirt')
@@ -46,7 +58,7 @@ class TestMixin(APITestCase):
         Category.objects.create(name='hoodie', slug='hoodie')
         Style.objects.create(name='casual', slug='casual')
 
-        self.p1 = Product.objects.create(
+        self.p_1 = Product.objects.create(
             name='nike t-shirt',
             slug='nike_t-shirt',
             description='1',
@@ -56,7 +68,7 @@ class TestMixin(APITestCase):
             style=Style.objects.get(name='sport'),
         )
 
-        self.p2 = Product.objects.create(
+        self.p_2 = Product.objects.create(
             name='puma hoodie',
             slug='puma_hoodie',
             description='1',
@@ -69,37 +81,37 @@ class TestMixin(APITestCase):
         Color.objects.create(name='white', slug='white')
         Color.objects.create(name='black', slug='black')
 
-        ProductItem.objects.create(
-            product=Product.objects.get(slug='nike_t-shirt'),
+        self.pi_1 = ProductItem.objects.create(
+            product=self.p_1,
             SKU='000001',
-            price='29',
+            item_price='29',
             color=Color.objects.get(name='white'),
         )
 
-        ProductItem.objects.create(
-            product=Product.objects.get(slug='puma_hoodie'),
+        self.pi_2 = ProductItem.objects.create(
+            product=self.p_2,
             SKU='000010',
-            price='119',
+            item_price='119',
             color=Color.objects.get(name='black'),
         )
 
         # nike t-shirt / Color: white / Size: M / Quantity: 100
         self.pisq_1 = ProductItemSizeQuantity.objects.create(
-            product_item=ProductItem.objects.get(SKU='000001'),
+            product_item=self.pi_1,
             size='M',
             quantity=100,
         )
 
         # nike t-shirt / Color: black / Size: M / Quantity: 50
         self.pisq_2 = ProductItemSizeQuantity.objects.create(
-            product_item=ProductItem.objects.get(SKU='000001'),
+            product_item=self.pi_1,
             size='L',
             quantity=50,
         )
 
         # puma hoodie / Color: black / Size: M / Quantity: 50
         self.pisq_3 = ProductItemSizeQuantity.objects.create(
-            product_item=ProductItem.objects.get(SKU='000010'),
+            product_item=self.pi_2,
             size='M',
             quantity=50,
         )

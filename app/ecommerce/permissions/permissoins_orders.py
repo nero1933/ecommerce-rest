@@ -6,7 +6,8 @@ class NotEmptyShoppingCart(BasePermission):
     message = "Can't create an empty order"
 
     def has_permission(self, request, view):
+        queryset = view.get_queryset()
         if request.method == 'OPTIONS':
             return True
 
-        return bool(len(view.get_queryset()))
+        return bool(len(queryset))

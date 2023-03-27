@@ -75,7 +75,7 @@ class TestReviews(TestMixin):
 
         self.get_response('POST', self.url, reverse_kwargs=reverse_kwargs, data=self.data) # review is created
 
-        response = self.client.get(reverse('read_reviews-list', kwargs={'product_slug': self.p1.slug}))
+        response = self.client.get(reverse('read_reviews-list', kwargs={'product_slug': self.p_1.slug}))
 
         self.assertEqual(response.data['results'][0]['rating_value'], 1,
                          "'rating_value' must be equal to 1, see self.data in setUp")

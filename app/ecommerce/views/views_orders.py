@@ -1,7 +1,12 @@
-from django.db import connections
-from django.shortcuts import redirect
+from urllib.parse import urlsplit
 
-from rest_framework import viewsets
+from django.db import connection
+from django.shortcuts import redirect
+from django.urls import resolve
+
+from rest_framework import viewsets, status
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -10,67 +15,62 @@ import decimal
 
 from ..models.models_orders import Order, OrderItem
 from ..models.models_shopping_cart import ShoppingCartItem
-from ..permissions.permissoins_orders import NotEmptyShoppingCart
-from ..serializers.serializers_orders import OrderCreateSerializer, OrderSerializer
+from ..serializers.serializers_orders import OrderSerializer
 
 
 class OrderCreateAPIView(CreateAPIView):
-    permission_classes = [IsAuthenticated, NotEmptyShoppingCart]
-    serializer_class = OrderCreateSerializer
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        order_id = response.data["id"]
-        self._cart_to_order(order_id) # create OrderItem instances from ShoppingCartItem instances for current user
-        self.get_queryset().delete() # remove all ShoppingCartItem instances for current user
-        return redirect(reverse('orders-detail', kwargs={"pk": order_id}))
+        shopping_cart_items = self.get_serializer_context()['shopping_cart_items']
+        if not shopping_cart_items.exists():
+            return Response({'error': 'No items in shopping cart.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        super().create(request, *args, **kwargs)
+        return redirect(reverse('orders-detail', kwargs={"pk": self.order_id}))
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['user'] = self.request.user
+        context['shopping_cart_items'] = self.get_queryset()
+        return context
+
+    def perform_create(self, serializer):
+        order = serializer.save()
+        self.order_id = order.pk
+        shopping_cart_items = self.get_serializer_context()['shopping_cart_items']
+        shopping_cart_items.delete()
 
     def get_queryset(self):
         """ Queryset contains all users shopping cart items. """
 
         queryset = ShoppingCartItem.objects \
             .select_related('product_item_size_quantity') \
-            .prefetch_related('product_item_size_quantity__product_item') \
+            .prefetch_related('product_item_size_quantity__product_item__discount') \
             .filter(cart__user=self.request.user)
 
         return queryset
 
-    def get_serializer_context(self):
-        """ Passes additional argument 'order_price' to serializer. """
-
-        context = super().get_serializer_context()
-        order_price = self._get_order_price()
-        context['order_price'] = order_price
-        return context
-
-    def _get_order_price(self) -> decimal.Decimal:
-        """ Calculates total price of the order. """
-
-        return sum([
-            cart_item.product_item_size_quantity.product_item.price * cart_item.quantity
-            for cart_item in self.get_queryset()])
-
-    def _cart_to_order(self, order_id):
-        """
-        Method retrieves created 'Order' instance and creates 'OrderItem'
-        for each of 'ShoppingCartItem' instance in users shopping cart
-        """
-
-        order = Order.objects.get(pk=order_id)
-        OrderItem.objects.bulk_create(
-            OrderItem(
-                order=order,
-                product_item_size_quantity=cart_item.product_item_size_quantity,
-                quantity=cart_item.quantity,
-                price=cart_item.product_item_size_quantity.product_item.price * cart_item.quantity, # calculates total price
-            )
-            for cart_item in self.get_queryset()
-        )
 
 class OrderReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated, ]
     lookup_field = 'pk'
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        # Check if the request came from a redirect
+        if 'HTTP_REFERER' in request.META:
+            referrer_url = request.META.get('HTTP_REFERER', '')
+            referrer_path = urlsplit(referrer_url).path
+            # Check if the redirect came from a 'create_order'
+            if resolve(referrer_path).url_name == 'create_order':
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         queryset = Order.objects.filter(user=self.request.user) \

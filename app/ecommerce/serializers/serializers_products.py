@@ -1,8 +1,9 @@
+import decimal
+from decimal import Decimal
 from rest_framework import serializers
 
 from .serializers_revews import ReviewSerializer
 from ..models.models_products import Product, ProductItem, ProductItemSizeQuantity, Image
-from ..utils.products.products_price_counters import DiscountCalculator
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -36,21 +37,19 @@ class ProductItemSerializer(serializers.ModelSerializer):
     discount_price = serializers.SerializerMethodField()
     color = serializers.SlugRelatedField(slug_field='name', read_only=True)
     product_item_image = ImageSerializer(many=True, read_only=True)
-    product_item_size_quantity =ProductItemSizeQuantitySerializer(many=True, read_only=True)
+    product_item_size_quantity = ProductItemSizeQuantitySerializer(many=True, read_only=True)
+    item_price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = ProductItem
-        fields = ['id', 'SKU', 'price', 'discount_price', 'color', 'product_item_size_quantity', 'product_item_image']
+        fields = ['id', 'SKU', 'item_price', 'discount_price', 'color', 'product_item_size_quantity', 'product_item_image']
 
-
-    @staticmethod
-    def get_discount_price(obj):
-        """
-        Returns 'discount_price' field.
-        Value is calculated by 'DiscountCalculator' util class.
+    def get_discount_price(self, obj):
         """
 
-        return DiscountCalculator.get_discount_price(obj)
+        """
+
+        return round(obj.get_price(), 2)
 
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
