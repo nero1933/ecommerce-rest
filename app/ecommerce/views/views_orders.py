@@ -4,11 +4,11 @@ from django.db import connection
 from django.shortcuts import redirect
 from django.urls import resolve
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 
 import decimal
@@ -18,7 +18,11 @@ from ..models.models_shopping_cart import ShoppingCartItem
 from ..serializers.serializers_orders import OrderSerializer
 
 
-class OrderCreateAPIView(CreateAPIView):
+class OrderCreateAPIView(mixins.RetrieveModelMixin,
+                         mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
+                         GenericAPIView):
+
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 

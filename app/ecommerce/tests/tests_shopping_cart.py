@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from ..models import ProductItem, ProductItemSizeQuantity
 from ..utils.tests.tests_mixins import TestMixin
 
@@ -101,3 +103,23 @@ class TestShoppingCartItem(TestMixin):
 
         response = self.get_response('POST', url_name, data=data)
         self.assertEqual(response.status_code, 400, "Product can't be added due to out of stock")
+
+    def test_discount_price(self):
+        # Apply discount 20% to product item
+        # Try to get 'item_price' and 'discount_price'
+        # 'discount_price' must be 'item_price' - 20%
+
+        self.create_discount()
+        self.pi_1.discount = self.discount_1  # Apply discount to 'nike t-shirt' product item
+        self.pi_1.save()
+
+        url_name = 'shopping_cart_items-list'
+        data = {
+           "product_item_size_quantity": self.pisq_1.pk,
+           "quantity": 1
+        }
+
+        response = self.get_response('POST', url_name, data=data)
+        self.assertEqual(response.status_code, 201, 'Product must be successfully added')
+        self.assertEqual(response.data['item_price'], Decimal('29.00'), "'item_price' must be Decimal('29.00')")
+        self.assertEqual(response.data['discount_price'], Decimal('23.20'), "'discount_price' must be Decimal('23.20')")

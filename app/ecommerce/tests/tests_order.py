@@ -8,9 +8,10 @@ class TestOrderCreate(TestMixin):
         self.user, self.user_data = self.create_user('tests@tests.com')
         self.create_address()
         self.create_shipping_method()
-        self.create_discount()
         self.create_products()
+        self.create_discount()
         self.pi_1.discount = self.discount_1  # Apply discount to 'nike t-shirt' product item
+        self.pi_1.save()
 
     def test_create_order(self):
         # Try to fill in shopping cart and create order
@@ -38,12 +39,13 @@ class TestOrderCreate(TestMixin):
             "shipping_method": 1,
         }
 
+        self.client.credentials(HTTP_REFERER='http://127.0.0.1:8000/api/v1/accounts/create_order')
         response = self.get_response('POST', 'create_order', data=data, follow=True) # create order
         self.assertEqual(response.redirect_chain, [('/api/v1/accounts/orders/1/', 302)], "Request must redirect to '/api/v1/accounts/orders/1' with 302 code")
-        self.assertEqual(response.status_code, 200, 'Order must be successfully created') # !!! change to 201 when redirect
-        self.assertEqual(response.data['order_item'][0]['price'], Decimal('58.00'), "Price of first order item must be '58.00'")
+        self.assertEqual(response.status_code, 201, 'Order must be successfully created')
+        self.assertEqual(response.data['order_item'][0]['price'], Decimal('46.40'), "Price of first order item must be Decimal('46.40') [discount 20% is applied]")
         self.assertEqual(response.data['order_item'][1]['price'], Decimal('119.00'), "Price of second order item must be '119.00'")
-        self.assertEqual(response.data['order_price'], Decimal('177.00'), "Order price must be '177.00'")
+        self.assertEqual(response.data['order_price'], Decimal('165.40'), "Order price must be Decimal('165.40')  [discount 20% is applied to first product]")
 
         response = self.get_response('GET', 'shopping_cart_items-list') # get shopping cart (must be empty)
         self.assertEqual(response.status_code, 200, 'Shopping cart must be displayed to authorized users')
