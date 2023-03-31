@@ -9,7 +9,7 @@ services:
              python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - ./app:/app
       - ./data/web:/vol/web
@@ -20,16 +20,17 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
-      - STRIPE_PUBLIC_KEY=pk_test_51MmacmFv5L004Kkji5BOV1YiH7RmbGj3IF5AdyD1BvmO9AgwflkKTzV2hho4P8Hw0lFZkIGQWcwgKRs7XHQajxNg00QZDSO1lH
-      - STRIPE_PRIVATE_KEY=sk_test_51MmacmFv5L004KkjB9d0Xkb93WgXZqiRDZViz2eapQoVggb7MEutCC64iHFU7yoKcC2dVH9uDybpKsobHRCLQjI000SSBIMwKY
     depends_on:
       - db
 
   db:
     image: postgres:15-alpine
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
+
+  redis:
+    image: redis
+    ports:
+      - "127.0.0.1:6379:6379"

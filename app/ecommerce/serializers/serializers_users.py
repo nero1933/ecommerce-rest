@@ -4,10 +4,12 @@ from ..models import UserProfile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
 
     class Meta:
         model = UserProfile
         fields = ('id', 'email', 'name', 'phone', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
 
     def create(self, validated_data):

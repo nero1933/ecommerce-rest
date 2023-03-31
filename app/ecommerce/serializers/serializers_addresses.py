@@ -29,7 +29,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     address = AddressSerializer()
 
-
     class Meta:
         model = UserAddress
         fields = ['id', 'address', 'user', 'is_default']

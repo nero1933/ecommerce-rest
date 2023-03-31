@@ -28,9 +28,11 @@ urlpatterns = [
     path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path('api/v1/accounts/register', RegistrationAPIView.as_view(), name='register'),
+    path('api/v1/accounts/register_confirm', register_confirm, name='register_confirm'),
     path('api/v1/accounts/login', LoginAPIView.as_view(), name='login'),
     path('api/v1/accounts/logout', LogoutAPIView.as_view(), name='logout'),
     path('api/v1/accounts/change_password', ChangePasswordAPIView.as_view(), name='change_password'),
+
     path('api/v1/accounts/<int:user_id>/shopping_cart', ShoppingCartAPIView.as_view(), name='shopping_cart'),
     path('api/v1/accounts/create_order', OrderCreateAPIView.as_view(), name='create_order'),
     path('api/v1/accounts/orders/<int:order_id>/product/<int:order_item_id>/', include(router_reviews.urls)),

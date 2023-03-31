@@ -35,7 +35,6 @@ ALLOWED_HOSTS.extend(
     )
 )
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -182,6 +181,13 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+    }
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -192,7 +198,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -209,6 +214,25 @@ MEDIA_ROOT = 'vol/web/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'ecommerce.UserProfile'
+
+# Sendgrid api (SMTP Server)
+# https://docs.sendgrid.com/for-developers/sending-email/django
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+
+# Custom variables
+
+USER_CONFIRMATION_KEY = 'user_confirmation_{token}'
+USER_CONFIRMATION_TIMEOUT = 1
+
+
 
 if DEBUG:
     import socket  # only if you haven't already imported this
