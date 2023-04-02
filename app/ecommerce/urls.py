@@ -41,4 +41,5 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/products/<slug:product_slug>/', include(router_read_reviews.urls)),
 
+    path('api/v1/accounts/test/<slug:token>', test, name='test'),
 ]

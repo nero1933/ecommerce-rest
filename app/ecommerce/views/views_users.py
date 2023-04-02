@@ -1,8 +1,11 @@
 import uuid
+import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
+
 from django.core.mail import send_mail
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
@@ -56,7 +59,14 @@ class RegistrationAPIView(CreateAPIView):
 
 @api_view(['GET'])
 def register_confirm(request):
-    message = f'test'
+    token = uuid.uuid4().hex
+    redis_key = settings.USER_CONFIRMATION_KEY.format(token=token)
+    cache.set(redis_key, {"user_id": request.user.id}, timeout=settings.USER_CONFIRMATION_TIMEOUT)
+    confirm_link = request.build_absolute_uri(
+        reverse('test', kwargs={'token': token})
+    )
+    message = f'test link\n{confirm_link}'
+    # print(message)
 
     send_mail(
         subject=_('TEST'),
@@ -65,8 +75,14 @@ def register_confirm(request):
         recipient_list=['nero1933@protonmail.com', ]
         )
 
-    print(request)
     return Response(status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def test(request, token):
+    redis_key = settings.USER_CONFIRMATION_KEY.format(token=token)
+    d = cache.get(redis_key)
+    print(f'test func user_id: {d["user_id"]}\n')
+    return redirect(reverse('products-list'))
 
     # redis_key = settings.USER_CONFIRMATION_KEY.format(token=token)
     # user_info = cache.get(redis_key) or {}

@@ -1,5 +1,3 @@
-import decimal
-from decimal import Decimal
 from rest_framework import serializers
 
 from .serializers_revews import ReviewSerializer
@@ -52,32 +50,26 @@ class ProductItemSerializer(serializers.ModelSerializer):
         return round(obj.get_price(), 2)
 
 
-class ProductRetrieveSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
+
+    brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    style = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    product_item = ProductItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item"]
+
+
+class ProductDetailSerializer(ProductSerializer):
     """
     Displays values from 'Product' model and particular form 'ProductItem' model.
     Values are show in 'ProductAPIList' view.
     """
 
-    brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    style = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    product_item = ProductItemSerializer(many=True, read_only=True)
-    #reviews = ReviewSerializer(many=True, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item"]
-
-
-class ProductListSerializer(serializers.ModelSerializer):
-
-    brand = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    style = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    product_item = ProductItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Product
-        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item"]
-
-
+        fields = ["id", "name", "slug", "description", "brand", "category", "style", "gender", "product_item", "reviews"]

@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import os
+import dotenv
+
 from pathlib import Path
 from datetime import timedelta
+
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -178,15 +182,20 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'desc',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379',
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -220,7 +229,7 @@ AUTH_USER_MODEL = 'ecommerce.UserProfile'
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -229,8 +238,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Custom variables
 
-USER_CONFIRMATION_KEY = 'user_confirmation_{token}'
-USER_CONFIRMATION_TIMEOUT = 1
+USER_CONFIRMATION_KEY = os.environ.get('USER_CONFIRMATION_KEY')
+USER_CONFIRMATION_TIMEOUT = 300
 
 
 

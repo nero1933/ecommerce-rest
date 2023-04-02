@@ -112,7 +112,7 @@ class Command(BaseCommand):
                 temp = ProductItem.objects.create(
                            product=Product.objects.get(name=obj_name),
                            SKU=slugify(obj_name),
-                           price='119',
+                           item_price='119',
                            color=Color.objects.get(name=name),
                        )
 
@@ -129,7 +129,7 @@ class Command(BaseCommand):
                 temp = ProductItem.objects.create(
                            product=Product.objects.get(name=obj_name),
                            SKU=slugify(obj_name),
-                           price='29',
+                           item_price='29',
                            color=Color.objects.get(name=name),
                        )
 

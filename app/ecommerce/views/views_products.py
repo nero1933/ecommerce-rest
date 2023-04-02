@@ -9,11 +9,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from ..filters.filters_products import ProductFilter
 from ..models.models_products import Product, ProductItemSizeQuantity
 from ..paginations.paginations_products import ProductPagination
-from ..serializers.serializers_products import ProductListSerializer, ProductRetrieveSerializer
+from ..serializers.serializers_products import ProductSerializer, ProductDetailSerializer
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = ProductListSerializer
+    serializer_class = ProductSerializer
     pagination_class = ProductPagination
     filter_backends = (DjangoFilterBackend, )
     filterset_class = ProductFilter
@@ -36,7 +36,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.action == 'retrieve':
-            serializer_class = ProductRetrieveSerializer
+            serializer_class = ProductDetailSerializer
 
         return serializer_class
 
