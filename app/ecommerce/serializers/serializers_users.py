@@ -5,12 +5,20 @@ from ..models import UserProfile
 
 class RegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
+    password_confirmation = serializers.CharField(write_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'email', 'name', 'phone', 'password')
+        fields = ('id', 'email', 'name', 'phone', 'password', 'password_confirmation')
         extra_kwargs = {'password': {'write_only': True}}
 
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password_confirmation = attrs.pop('password_confirmation', None)
+        if password != password_confirmation:
+            raise serializers.ValidationError("Passwords do not match.")
+
+        return attrs
 
     def create(self, validated_data):
         user = UserProfile.objects.create_user(

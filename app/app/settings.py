@@ -48,12 +48,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
+
+    # libs
     'rest_framework',
     'rest_framework_simplejwt',
+    'debug_toolbar',
     'drf_spectacular',
     'django_filters',
     'phonenumber_field',
+
+    # apps
     'ecommerce.apps.EcommerceConfig',
 ]
 
@@ -65,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # libs
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
@@ -224,7 +230,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'ecommerce.UserProfile'
 
-# Sendgrid api (SMTP Server)
+# Sendgrid api (SMTP API)
 # https://docs.sendgrid.com/for-developers/sending-email/django
 
 EMAIL_HOST = 'smtp.sendgrid.net'
@@ -238,9 +244,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Custom variables
 
+DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL')
+
 USER_CONFIRMATION_KEY = os.environ.get('USER_CONFIRMATION_KEY')
 USER_CONFIRMATION_TIMEOUT = 300
 
+PASSWORD_CONFIRMATION_KEY = os.environ.get('PASSWORD_CONFIRMATION_KEY')
+PASSWORD_CONFIRMATION_TIMEOUT = 300
 
 
 if DEBUG:

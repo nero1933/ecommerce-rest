@@ -28,9 +28,9 @@ urlpatterns = [
     path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path('api/v1/accounts/register', RegistrationAPIView.as_view(), name='register'),
-    path('api/v1/accounts/register_confirm', register_confirm, name='register_confirm'),
-    path('api/v1/accounts/login', LoginAPIView.as_view(), name='login'),
-    path('api/v1/accounts/logout', LogoutAPIView.as_view(), name='logout'),
+    path('api/v1/accounts/register_confirm/<str:token>', ConfirmRegister.as_view(), name='register_confirm'),
+    # path('api/v1/accounts/login', LoginAPIView.as_view(), name='login'),
+    # path('api/v1/accounts/logout', LogoutAPIView.as_view(), name='logout'),
     path('api/v1/accounts/change_password', ChangePasswordAPIView.as_view(), name='change_password'),
 
     path('api/v1/accounts/<int:user_id>/shopping_cart', ShoppingCartAPIView.as_view(), name='shopping_cart'),
@@ -40,6 +40,4 @@ urlpatterns = [
 
     path('api/v1/', include(router.urls)),
     path('api/v1/products/<slug:product_slug>/', include(router_read_reviews.urls)),
-
-    path('api/v1/accounts/test/<slug:token>', test, name='test'),
 ]

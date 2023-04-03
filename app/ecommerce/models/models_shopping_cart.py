@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 
 
 class ShoppingCart(models.Model):
-    user = models.OneToOneField('UserProfile', related_name='users', on_delete=models.PROTECT)
+    user = models.OneToOneField('UserProfile', related_name='users', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Shopping Cart: {self.user}'

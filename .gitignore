@@ -133,3 +133,6 @@ dmypy.json
 
 # folder to store static files while server is in dev mdoe
 /data
+
+# plans for the website
+TO_DO
