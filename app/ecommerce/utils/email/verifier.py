@@ -15,11 +15,11 @@ class RegisterConfirm:
         user_info = cache.get(register_key) or {}
 
         if user_id := user_info.get('user_id'):
-            user = get_object_or_404(UserProfile, id=user_id)
+            user = get_object_or_404(UserProfile, pk=user_id)
             user.is_active = True
             user.save(update_fields=['is_active'])
             cache.delete(register_key)
-            return Response({'message': 'Successfully registered'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Successfully registered'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -35,6 +35,6 @@ class PasswordResetConfirm:
             user.set_password(new_password)
             user.save()
             cache.delete(pswd_reset_key)
-            return Response({'message': 'Password updated successfully.'})
+            return Response({'message': 'Password updated successfully.'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

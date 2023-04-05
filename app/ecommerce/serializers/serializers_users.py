@@ -3,7 +3,7 @@ from rest_framework import serializers
 from ..models import UserProfile
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     password_confirmation = serializers.CharField(write_only=True)
 
@@ -20,15 +20,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def create(self, validated_data):
-        user = UserProfile.objects.create_user(
-            validated_data['email'],
-            validated_data['name'],
-            validated_data['phone'],
-            validated_data['password']
-        )
-
-        return user
+    # def create(self, validated_data):
+    #     user = UserProfile.objects.create_user(
+    #         validated_data['email'],
+    #         validated_data['name'],
+    #         validated_data['phone'],
+    #         validated_data['password']
+    #     )
+    #
+    #     return user
 
 
 class PasswordChangeSerializer(serializers.Serializer):

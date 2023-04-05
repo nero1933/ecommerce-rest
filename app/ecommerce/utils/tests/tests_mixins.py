@@ -10,10 +10,13 @@ class TestMixin(APITestCase):
     def create_user(self, email):
         user = UserProfile.objects \
             .create_user(email=email,
-                         name='tests',
+                         name='test',
                          phone='+380951112233',
                          password='123456'
                          )
+
+        user.is_active = True
+        user.save()
 
         user_data = {"email": email, "password": "123456"}
 
