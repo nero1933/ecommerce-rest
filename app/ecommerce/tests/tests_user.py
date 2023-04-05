@@ -10,7 +10,6 @@ from ecommerce.models import UserProfile
 
 
 def get_link_from_message(message):
-    message = mail.outbox[0].body
     regex = r"(?P<url>https?://[^\s]+)"
     match = re.search(regex, message)
     link = match.group("url")
