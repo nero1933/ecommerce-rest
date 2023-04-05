@@ -1,19 +1,15 @@
 from urllib.parse import urlsplit
 
-from django.db import connection
 from django.shortcuts import redirect
 from django.urls import resolve
 
 from rest_framework import viewsets, status, mixins
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, GenericAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 
-import decimal
-
-from ..models.models_orders import Order, OrderItem
+from ..models.models_orders import Order
 from ..models.models_shopping_cart import ShoppingCartItem
 from ..serializers.serializers_orders import OrderSerializer
 
@@ -47,8 +43,9 @@ class OrderCreateAPIView(mixins.RetrieveModelMixin,
         shopping_cart_items.delete()
 
     def get_queryset(self):
-        """ Queryset contains all users shopping cart items. """
-
+        """
+        Queryset contains all user's shopping cart items.
+        """
         queryset = ShoppingCartItem.objects \
             .select_related('product_item_size_quantity') \
             .prefetch_related('product_item_size_quantity__product_item__discount') \

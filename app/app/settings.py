@@ -240,6 +240,19 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# https://docs.djangoproject.com/en/4.2/topics/testing/advanced/#measuring-code-coverage
+# Integration with coverage.py¶
+
+COVERAGE_MODULE_EXCLUDES = [
+    'tests*',
+    'admin*',
+    'settings*',
+    'urls*',
+    'wsgi*',
+    '*/migrations/*',
+]
+COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
+
 
 
 # Custom variables

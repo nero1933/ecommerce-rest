@@ -31,7 +31,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
             context['order_id'] = self.kwargs['order_id']
             context['order_item_id'] = self.kwargs['order_item_id']
             context['user'] = self.request.user
-        # print(f'LEN: {len(connection.queries)}')
         return context
 
     def get_queryset(self):

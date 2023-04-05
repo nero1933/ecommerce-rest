@@ -16,7 +16,11 @@ from ..utils.email.verifier import PasswordResetConfirm, RegisterConfirm
 
 class RegisterAPIView(CreateAPIView, RegisterEmail):
     """
+    View for registration.
 
+    After entering user info new user will be created and
+    user will receive an email with verification link which
+    he should follow to finish registration. (Make his account active)
     """
 
     serializer_class = RegisterSerializer
@@ -40,7 +44,9 @@ class RegisterAPIView(CreateAPIView, RegisterEmail):
 
 class RegisterConfirmAPIView(APIView, RegisterConfirm):
     """
+    View for confirm register.
 
+    Simply activates user's account when user opens current view with his token.
     """
 
     def get(self, request, token):

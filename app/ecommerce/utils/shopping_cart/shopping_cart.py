@@ -1,14 +1,26 @@
 from rest_framework import serializers
 from rest_framework.response import Response
 
-from ecommerce.models import ShoppingCart, ShoppingCartItem, ProductItem
+from ecommerce.models import ShoppingCart, ShoppingCartItem, ProductItem, ProductItemSizeQuantity
 
 
 class ShoppingCartItemUtil:
     """
     Util class which redefines 'create' and 'update' methods.
-    Makes check of max available quantity.
+    Methods checks max available quantity.
     """
+
+    @staticmethod
+    def _check_quantity(product_item_size_quantity: ProductItemSizeQuantity,
+                        quantity: int
+                        ):
+        """
+        :param product_item_size_quantity: ProductItemSizeQuantity's instance
+        :param quantity: Quantity of an item in shopping cart
+        :return: Quantity
+        """
+        in_stock_quantity = product_item_size_quantity.quantity
+        return quantity if quantity <= in_stock_quantity else in_stock_quantity
 
     def create(self, validated_data):
         product_item_size_quantity = validated_data.pop('product_item_size_quantity')
@@ -24,6 +36,7 @@ class ShoppingCartItemUtil:
                 item.delete()
 
         quantity = self._check_quantity(product_item_size_quantity, quantity)
+
         # When user tries to order a product which is out of stock
         # 'quantity' will be equal to 0 after 'self._check_quantity()' method
         # will run (if 'quantity' > 'is_stock' than 'quantity' = 'is_stock').
@@ -46,8 +59,3 @@ class ShoppingCartItemUtil:
 
         instance.save()
         return instance
-
-    @staticmethod
-    def _check_quantity(product_item_size_quantity, quantity):
-        in_stock_quantity = product_item_size_quantity.quantity
-        return quantity if quantity <= in_stock_quantity else in_stock_quantity

@@ -4,7 +4,6 @@ import rest_framework.request
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from rest_framework.request import Request
 
 from rest_framework.reverse import reverse
 
@@ -24,6 +23,14 @@ class SendLinkEmail:
                   subject: str,
                   ):
         """
+        Method sends an email which contains a html template with a confirmation link for user.
+
+        It generates a token, joins it with a secret key and sets the resul as a key in redis.
+        The value is a dict with a key 'user_id' and a value of user's id. Then it generates
+        a link with a path taken from 'reverse_name' and the 'token'. After that it loads
+        a template and renders it with a context, pastes it as a string in email message.
+        When all done it sends an email to the user.
+
         :param request: The HTTP request object.
         :param user: UserProfile's instance.
         :param secret_key: The secret key (located in settings).
@@ -34,16 +41,7 @@ class SendLinkEmail:
                              which will be sent in the email.
         :param template: The path to the template which will be rendered in email.
         :param subject: The subject of the email.
-
-        Method sends an email which contains a html template with a confirmation link for user.
-
-        It generates a token, joins it with a secret key and sets the resul as a key in redis.
-        The value is a dict with a key 'user_id' and a value of user's id. Then it generates
-        a link with a path taken from 'reverse_name' and the 'token'. After that it loads
-        a template and renders it with a context, pastes it as a string in email message.
-        When all done it sends an email to the user.
         """
-
         token = uuid.uuid4().hex
         register_key = secret_key.format(token=token)
         cache.set(register_key, {'user_id': user.pk}, timeout=timeout)
@@ -78,14 +76,13 @@ class RegisterEmail(SendLinkEmail):
                        user: UserProfile,
                        ):
         """
-        :param request: The HTTP request object.
-        :param user: UserProfile's instance.
-
         Method sends an email with link to user for confirmation his email.
 
         It uses '_send_link' method with preset parameters for sending registration confirm emails.
-        """
 
+        :param request: The HTTP request object.
+        :param user: UserProfile's instance.
+        """
         self._send_link(
             request,
             user,
@@ -104,14 +101,13 @@ class PasswordResetEmail(SendLinkEmail):
                              user: UserProfile,
                              ):
         """
-        :param request: The HTTP request object.
-        :param user: UserProfile's instance.
-
         Method sends an email with link to user for entering new password (serializer).
 
         It uses '_send_link' method with preset parameters for password reset.
-        """
 
+        :param request: The HTTP request object.
+        :param user: UserProfile's instance.
+        """
         self._send_link(
             request,
             user,
@@ -126,8 +122,8 @@ class PasswordResetEmail(SendLinkEmail):
 
 
 
-    # def send_new_order(self):
+    # def email_new_order(self):
     #     pass
     #
-    # def send_shipped_order(self):
+    # def email_shipped_order(self):
     #     pass
