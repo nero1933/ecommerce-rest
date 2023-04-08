@@ -10,7 +10,19 @@ from ecommerce.models import UserProfile
 
 class RegisterConfirm:
 
-    def register_confirm(self, token):
+    def register_confirm(self, token: str):
+        """
+        Method makes user active.
+
+        It joins secret key with token. Result is a key for entry in redis.
+        Tries to get a value which supposed to be a dict with "user_id" key
+        and user's id value. Gets user by id and sets his "is_active" to True
+        after what deletes entry in redis. HTTP 204 if everything done or
+        HTTP 400 if entry has expired.
+
+        :param token: Takes token that was generated while registration
+        :return: HTTP 204 if everything done or HTTP 400 if entry has expired.
+        """
         register_key = settings.USER_CONFIRMATION_KEY.format(token=token)
         user_info = cache.get(register_key) or {}
 
@@ -27,6 +39,19 @@ class RegisterConfirm:
 class PasswordResetConfirm:
 
     def password_reset_confirm(self, new_password, token):
+        """
+        Method changes user's password.
+
+        It joins secret key with token. Result is a key for entry in redis.
+        Tries to get a value which supposed to be a dict with "user_id" key
+        and user's id value. Gets user by id and sets him new password after
+        what deletes entry in redis. HTTP 204 if everything done or HTTP 400
+        if entry has expired.
+
+        :param new_password: New password which will be set for user.
+        :param token: Token that was generated when send request to reset password
+        :return: HTTP 204 if everything done or HTTP 400 if entry has expired.
+        """
         pswd_reset_key = settings.PASSWORD_CONFIRMATION_KEY.format(token=token)
         user_info = cache.get(pswd_reset_key) or {}
 

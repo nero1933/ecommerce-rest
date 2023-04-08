@@ -21,7 +21,6 @@ dotenv.load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -94,7 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -107,7 +105,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASS'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -183,12 +180,18 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+# drf-spectacular
+# https://drf-spectacular.readthedocs.io/en/latest/
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'E-Commence store',
     'DESCRIPTION': 'desc',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+# django-redis
+# https://pypi.org/project/django-redis/
 
 CACHES = {
     'default': {
@@ -240,8 +243,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Coverage
 # https://docs.djangoproject.com/en/4.2/topics/testing/advanced/#measuring-code-coverage
-# Integration with coverage.py¶
+# Integration with coverage.py
 
 COVERAGE_MODULE_EXCLUDES = [
     'tests*',
@@ -251,6 +255,7 @@ COVERAGE_MODULE_EXCLUDES = [
     'wsgi*',
     '*/migrations/*',
 ]
+
 COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
 
 
@@ -264,6 +269,7 @@ USER_CONFIRMATION_TIMEOUT = 300
 
 PASSWORD_CONFIRMATION_KEY = os.environ.get('PASSWORD_CONFIRMATION_KEY')
 PASSWORD_CONFIRMATION_TIMEOUT = 300
+
 
 
 if DEBUG:

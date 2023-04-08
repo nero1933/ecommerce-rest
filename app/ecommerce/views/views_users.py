@@ -1,5 +1,4 @@
 from django.db import IntegrityError
-from django.http import Http404
 
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, get_object_or_404
@@ -55,7 +54,9 @@ class RegisterConfirmAPIView(APIView, RegisterConfirm):
 
 class PasswordResetAPIView(APIView, PasswordResetEmail):
     """
+    View for password reset.
 
+    Takes 'email' from serializer and sends to it a mail with a link to proceed password reset.
     """
 
     def post(self, request):
@@ -69,7 +70,9 @@ class PasswordResetAPIView(APIView, PasswordResetEmail):
 
 class PasswordResetConfirmAPIView(APIView, PasswordResetConfirm):
     """
+    View for enter new password after reset. (Changes old one to new one)
 
+    Takes 'new_password' from serializer and sets it as a new password for user.
     """
 
     def post(self, request, token):
@@ -81,7 +84,7 @@ class PasswordResetConfirmAPIView(APIView, PasswordResetConfirm):
 
 class ChangePasswordAPIView(APIView):
     """
-
+    UNDER DEVELOPMENT!
     """
 
     permission_classes = [IsAuthenticated, ]
