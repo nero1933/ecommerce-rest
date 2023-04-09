@@ -1,1 +1,2 @@
-# REST_pet-project_DEV
+# Ecommerce website
+# Under development
