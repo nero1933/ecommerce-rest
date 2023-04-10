@@ -46,3 +46,4 @@ jobs:
 
       - name: Run tests
         run: docker compose run --rm app sh -c "python manage.py test"
+#
