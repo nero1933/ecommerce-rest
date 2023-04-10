@@ -15,12 +15,12 @@ jobs:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       SECRET_KEY: 'secret_key'
-      DEBUG: '1'
+      DEBUG: 'True'
       DB_HOST: db
       DB_NAME: dbname
       DB_USER: user
       DB_PASS: password
-      ALLOWED_HOSTS: 127.0.0.1
+      ALLOWED_HOSTS: '127.0.0.1'
       SENDGRID_API_KEY: none
       FROM_EMAIL: none
       USER_CONFIRMATION_KEY: none
@@ -32,21 +32,6 @@ jobs:
 
       - name: Build Docker images
         run: docker compose build
-        env:
-          POSTGRES_DB: dbname
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          SECRET_KEY: 'secret_key'
-          DEBUG: '1'
-          DB_HOST: db
-          DB_NAME: dbname
-          DB_USER: user
-          DB_PASS: password
-          ALLOWED_HOSTS: 127.0.0.1
-          SENDGRID_API_KEY: none
-          FROM_EMAIL: none
-          USER_CONFIRMATION_KEY: none
-          PASSWORD_CONFIRMATION_KEY: none
 
       - name: Wait
         run: sleep 10s
@@ -55,39 +40,11 @@ jobs:
         run: |
           docker compose run --rm app sh -c "python manage.py makemigrations"
           docker compose run --rm app sh -c "python manage.py migrate"
-#        env:
-#          POSTGRES_DB: dbname
-#          POSTGRES_USER: user
-#          POSTGRES_PASSWORD: password
-#          SECRET_KEY: 'secret_key'
-#          DEBUG: 1
-#          DB_HOST: db
-#          DB_NAME: dbname
-#          DB_USER: user
-#          DB_PASS: password
-#          ALLOWED_HOSTS: 127.0.0.1
-#          SENDGRID_API_KEY: none
-#          FROM_EMAIL: none
-#          USER_CONFIRMATION_KEY: none
-#          PASSWORD_CONFIRMATION_KEY: none
+        env:
+          DATABASE_URL: 'db://db:db@localhost:${{ job.services.db.ports[5432] }}/dbname'
 
       - name: Start services
         run: docker compose up
-#        env:
-#          POSTGRES_DB: dbname
-#          POSTGRES_USER: user
-#          POSTGRES_PASSWORD: password
-#          SECRET_KEY: 'secret_key'
-#          DEBUG: 1
-#          DB_HOST: db
-#          DB_NAME: dbname
-#          DB_USER: user
-#          DB_PASS: password
-#          ALLOWED_HOSTS: 127.0.0.1
-#          SENDGRID_API_KEY: none
-#          FROM_EMAIL: none
-#          USER_CONFIRMATION_KEY: none
-#          PASSWORD_CONFIRMATION_KEY: none
 
       - name: Check containers
         run: docker compose ps
