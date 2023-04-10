@@ -53,6 +53,9 @@ jobs:
           echo USER_CONFIRMATION_KEY=${USER_CONFIRMATION_KEY} >> .env
           echo PASSWORD_CONFIRMATION_KEY=${PASSWORD_CONFIRMATION_KEY} >> .env
 
+      - name: user
+        run: whoami
+
       - name: ls -la
         run: |
           ls -la
