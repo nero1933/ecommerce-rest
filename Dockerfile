@@ -20,9 +20,7 @@ RUN python -m venv /py && \
     mkdir -p /vol/web/static && \
     mkdir -p /vol/web/media && \
     chown -R app:app /vol && \
-    chmod -R 755 /vol && \
-    chmod u+w /app/ecommerce/migrations && \
-    /py/bin/pip python manage.py makemigrations
+    chmod -R 755 /vol
 
 
 #RUN pip install virtualenv && virtualenv -p python /app/venv
