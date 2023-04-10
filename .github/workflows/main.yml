@@ -41,8 +41,6 @@ jobs:
 
       - name: Create .env
         run:
-          cd ./app/app
-          ls -la
           echo SECRET_KEY=${SECRET_KEY} >> .env
           echo DEBUG=${DEBUG} >> .env
           echo DB_HOST=${DB_HOST} >> .env
