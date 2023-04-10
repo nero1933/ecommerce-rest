@@ -35,7 +35,7 @@ jobs:
 
       - name: Make Migrations & Migrate
         run: |
-          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
+          docker compose run --rm app sh -c "sudo python manage.py makemigrations ecommerce"
           docker compose run --rm app sh -c "python manage.py migrate"
 
       - name: Start services
