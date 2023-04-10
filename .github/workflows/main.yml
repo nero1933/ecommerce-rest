@@ -63,6 +63,10 @@ jobs:
 
       - name: Run db
         run: docker compose up db
+        env:
+          POSTGRES_DB: dbname
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
 
       - name: Wait
         run: sleep 10s
