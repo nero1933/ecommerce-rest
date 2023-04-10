@@ -51,13 +51,15 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
+      - name: Wait
+        run: sleep 10s
+
       - name: Make Migrations
         run: docker compose run --rm app sh -c "python manage.py makemigrations"
         env:
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
-
 
       - name: Start services
         run: docker compose up
