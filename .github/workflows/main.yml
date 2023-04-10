@@ -34,7 +34,34 @@ jobs:
         run: docker compose build
 
       - name: ls -la
-        run: ls -la
+        run: |
+          ls -la
+          cd /app
+          ls -la
+
+      - name: Create .env
+        run:
+          cd /app/app
+          echo POSTGRES_DB=dbname >> .env
+          echo POSTGRES_USER=dbname >> .env
+          echo POSTGRES_PASSWORD=dbname >> .env
+          echo SECRET_KEY='secret_key' >> .env
+          echo DEBUG='1' >> .env
+          echo DB_HOST=db >> .env
+          echo DB_NAME=dbname >> .env
+          echo DB_USER=user >> .env
+          echo DB_PASS=password >> .env
+          echo ALLOWED_HOSTS='127.0.0.1' >> .env
+          echo SENDGRID_API_KEY=none >> .env
+          echo FROM_EMAIL=none >> .env
+          echo USER_CONFIRMATION_KEY=none >> .env
+          echo PASSWORD_CONFIRMATION_KEY=none >> .env
+
+      - name: ls -la
+        run: |
+          ls -la
+          cd /app/app
+          ls -la
 
       - name: Make Migrations & Migrate
         run: |
