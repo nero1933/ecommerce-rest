@@ -16,11 +16,12 @@ services:
       - ./data/web:/vol/web
     environment:
       - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - FROM_EMAIL=${FROM_EMAIL}
       - USER_CONFIRMATION_KEY=${USER_CONFIRMATION_KEY}

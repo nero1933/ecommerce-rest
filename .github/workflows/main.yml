@@ -37,16 +37,16 @@ jobs:
       - name: Add secrets to .env
         run: |
           echo DEBUG=1 >> .env
-          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASS=${{ secrets.DB_PASS }} >> .env
-          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-          echo SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} >> .env
-          echo FROM_EMAIL=${{ secrets.FROM_EMAIL }} >> .env
-          echo USER_CONFIRMATION_KEY=${{ secrets.USER_CONFIRMATION_KEY }} >> .env
-          echo PASSWORD_CONFIRMATION_KEY=${{ secrets.PASSWORD_CONFIRMATION_KEY }} >> .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> /app/app/.env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> /app/app/.env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> /app/app/.env
+          echo DB_USER=${{ secrets.DB_USER }} >> /app/app/.env
+          echo DB_PASS=${{ secrets.DB_PASS }} >> /app/app/.env
+          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> /app/app/.env
+          echo SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} >> /app/app/.env
+          echo FROM_EMAIL=${{ secrets.FROM_EMAIL }} >> /app/app/.env
+          echo USER_CONFIRMATION_KEY=${{ secrets.USER_CONFIRMATION_KEY }} >> /app/app/.env
+          echo PASSWORD_CONFIRMATION_KEY=${{ secrets.PASSWORD_CONFIRMATION_KEY }} >> /app/app/.env
 
       - name: Build Docker images
         run: docker compose build
