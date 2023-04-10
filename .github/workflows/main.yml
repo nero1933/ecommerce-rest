@@ -10,38 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-#    services:
-#      db:
-#        image: postgres
-#        env:
-#          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-#          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-#          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-#        ports:
-#          - 5432:5432
-#        options: >-
-#          --health-cmd pg_isready
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-#      - name: Add secrets to .env
-#        run: |
-#          echo DEBUG=1 >> .env
-#          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-#          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-#          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-#          echo DB_USER=${{ secrets.DB_USER }} >> .env
-#          echo DB_PASS=${{ secrets.DB_PASS }} >> .env
-#          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-#          echo SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} >> .env
-#          echo FROM_EMAIL=${{ secrets.FROM_EMAIL }} >> .env
-#          echo USER_CONFIRMATION_KEY=${{ secrets.USER_CONFIRMATION_KEY }} >> .env
-#          echo PASSWORD_CONFIRMATION_KEY=${{ secrets.PASSWORD_CONFIRMATION_KEY }} >> .env
 
       - name: Build Docker images
         run: docker compose build
@@ -61,51 +32,46 @@ jobs:
           USER_CONFIRMATION_KEY: none
           PASSWORD_CONFIRMATION_KEY: none
 
-      - name: Run db
-        run: docker compose up db
-        env:
-          POSTGRES_DB: dbname
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-
       - name: Wait
         run: sleep 10s
 
-      - name: Make Migrations
-        run: docker compose run --rm app sh -c "python manage.py makemigrations"
-        env:
-          POSTGRES_DB: dbname
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          SECRET_KEY: 'secret_key'
-          DEBUG: 1
-          DB_HOST: db
-          DB_NAME: dbname
-          DB_USER: user
-          DB_PASS: password
-          ALLOWED_HOSTS: 127.0.0.1
-          SENDGRID_API_KEY: none
-          FROM_EMAIL: none
-          USER_CONFIRMATION_KEY: none
-          PASSWORD_CONFIRMATION_KEY: none
+      - name: Make Migrations & Migrate
+        run: |
+          docker compose run --rm app sh -c "python manage.py makemigrations"
+          docker compose run --rm app sh -c "python manage.py migrate"
+#        env:
+#          POSTGRES_DB: dbname
+#          POSTGRES_USER: user
+#          POSTGRES_PASSWORD: password
+#          SECRET_KEY: 'secret_key'
+#          DEBUG: 1
+#          DB_HOST: db
+#          DB_NAME: dbname
+#          DB_USER: user
+#          DB_PASS: password
+#          ALLOWED_HOSTS: 127.0.0.1
+#          SENDGRID_API_KEY: none
+#          FROM_EMAIL: none
+#          USER_CONFIRMATION_KEY: none
+#          PASSWORD_CONFIRMATION_KEY: none
 
       - name: Start services
         run: docker compose up
-        env:
-          POSTGRES_DB: dbname
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          SECRET_KEY: 'secret_key'
-          DEBUG: 1
-          DB_HOST: db
-          DB_NAME: dbname
-          DB_USER: user
-          DB_PASS: password
-          ALLOWED_HOSTS: 127.0.0.1
-          SENDGRID_API_KEY: none
-          FROM_EMAIL: none
-          USER_CONFIRMATION_KEY: none
-          PASSWORD_CONFIRMATION_KEY: none
+#        env:
+#          POSTGRES_DB: dbname
+#          POSTGRES_USER: user
+#          POSTGRES_PASSWORD: password
+#          SECRET_KEY: 'secret_key'
+#          DEBUG: 1
+#          DB_HOST: db
+#          DB_NAME: dbname
+#          DB_USER: user
+#          DB_PASS: password
+#          ALLOWED_HOSTS: 127.0.0.1
+#          SENDGRID_API_KEY: none
+#          FROM_EMAIL: none
+#          USER_CONFIRMATION_KEY: none
+#          PASSWORD_CONFIRMATION_KEY: none
 
       - name: Check containers
         run: docker compose ps
