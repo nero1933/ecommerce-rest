@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+
     runs-on: ubuntu-latest
 
 #    env:
@@ -25,6 +26,22 @@ jobs:
 #      FROM_EMAIL: none
 #      USER_CONFIRMATION_KEY: none_{token}
 #      PASSWORD_CONFIRMATION_KEY: none_{token}
+
+    env:
+      POSTGRES_DB: ${{ DB_NAME }}
+      POSTGRES_USER: ${{ DB_USER }}
+      POSTGRES_PASSWORD: ${{ DB_PASS }}
+      SECRET_KEY: ${{ SECRET_KEY }}
+      DEBUG: ${{ DEBUG }}
+      DB_HOST: db
+      DB_NAME: ${{ DB_NAME }}
+      DB_USER: ${{ DB_USER }}
+      DB_PASS: ${{ DB_PASS }}
+      ALLOWED_HOSTS: ${{ ALLOWED_HOSTS }}
+      SENDGRID_API_KEY: ${{ SENDGRID_API_KEY }}
+      FROM_EMAIL: ${{ FROM_EMAIL }}
+      USER_CONFIRMATION_KEY: ${{ USER_CONFIRMATION_KEY }}
+      PASSWORD_CONFIRMATION_KEY: ${{ PASSWORD_CONFIRMATION_KEY }}
 
     steps:
       - name: Checkout code
