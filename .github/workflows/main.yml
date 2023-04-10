@@ -61,8 +61,11 @@ jobs:
           USER_CONFIRMATION_KEY: none
           PASSWORD_CONFIRMATION_KEY: none
 
-#      - name: Wait
-#        run: sleep 10s
+      - name: Run db
+        run: docker compose up db
+
+      - name: Wait
+        run: sleep 10s
 
       - name: Make Migrations
         run: docker compose run --rm app sh -c "python manage.py makemigrations"
