@@ -1,20 +1,61 @@
-# commit
-
-name: Docker Image CI
+name: Django CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Add secrets to .env
+        run: |
+          echo DEBUG=1 >> .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo DB_USER=${{ secrets.DB_USER }} >> .env
+          echo DB_PASS=${{ secrets.DB_PASS }} >> .env
+          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+          echo SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} >> .env
+          echo FROM_EMAIL=${{ secrets.FROM_EMAIL }} >> .env
+          echo USER_CONFIRMATION_KEY=${{ secrets.USER_CONFIRMATION_KEY }} >> .env
+          echo PASSWORD_CONFIRMATION_KEY=${{ secrets.PASSWORD_CONFIRMATION_KEY }} >> .env
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Start services
+        run: docker compose up
+
+      - name: Make Migrations
+        run: docker compose run --rm app sh -c "python manage.py makemigrations"
+
+      - name: Run tests
+        run: docker compose run --rm app sh -c "python manage.py test"

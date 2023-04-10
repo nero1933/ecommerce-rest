@@ -15,12 +15,16 @@ services:
       - ./app:/app
       - ./data/web:/vol/web
     environment:
-      - SECRET_KEY=devsecretkey
-      - DEBUG=1
-      - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - USER_CONFIRMATION_KEY=${USER_CONFIRMATION_KEY}
+      - PASSWORD_CONFIRMATION_KEY=${PASSWORD_CONFIRMATION_KEY}
     depends_on:
       - db
       - redis
@@ -29,9 +33,9 @@ services:
     container_name: db
     image: postgres:15-alpine
     environment:
-      - POSTGRES_DB=devdb
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
 
   redis:
     container_name: redis
