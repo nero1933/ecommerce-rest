@@ -55,7 +55,7 @@ jobs:
 
       - name: user
         run: |
-          sudo adduser runner -aG app
+          sudo adduser runner app
           mv ./app/.env ./app/app/.env
 
       - name: ls -la
