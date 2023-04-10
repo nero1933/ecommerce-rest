@@ -25,7 +25,6 @@ jobs:
       FROM_EMAIL: none
       USER_CONFIRMATION_KEY: none
       PASSWORD_CONFIRMATION_KEY: none
-      DATABASE_URL: 'db://user:password@localhost:5432/dbname'
 
     steps:
       - name: Checkout code
@@ -34,16 +33,10 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
-      - name: Wait
-        run: sleep 10s
-
       - name: Make Migrations & Migrate
         run: |
           docker compose run --rm app sh -c "python manage.py makemigrations"
           docker compose run --rm app sh -c "python manage.py migrate"
-        env:
-          DATABASE_URL: 'db://user:password@localhost:5432/dbname'
-
 
       - name: Start services
         run: docker compose up

@@ -33,6 +33,8 @@ services:
   db:
     container_name: db
     image: postgres:15-alpine
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
