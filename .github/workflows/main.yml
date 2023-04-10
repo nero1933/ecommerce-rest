@@ -33,38 +33,9 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
-      - name: ls -la
-        run: |
-          ls -la
-          cd ./app
-          ls -la
-
-      - name: Create .env
-        run:
-          echo SECRET_KEY=${{ env.SECRET_KEY }} >> .env
-          echo DEBUG=${{ env.DEBUG }} >> .env
-          echo DB_HOST=${{ env.DB_HOST }} >> .env
-          echo DB_NAME=${{ env.DB_NAME }} >> .env
-          echo DB_USER=${{ env.DB_USER }} >> .env
-          echo DB_PASS=${{ env.DB_PASS }} >> .env
-          echo ALLOWED_HOSTS=${{ env.ALLOWED_HOSTS }} >> .env
-          echo SENDGRID_API_KEY=${{ env.SENDGRID_API_KEY }} >> .env
-          echo FROM_EMAIL=${{ env.FROM_EMAIL }} >> .env
-          echo USER_CONFIRMATION_KEY=${{ env.USER_CONFIRMATION_KEY }} >> .env
-          echo PASSWORD_CONFIRMATION_KEY=${{ env.PASSWORD_CONFIRMATION_KEY }} >> .env
-
-      - name: mv
-        run: |
-          mv .env ./app/.env
-
-      - name: ls -la
-        run: |
-          ls -la
-          cd ./app/app
-          ls -la
-
       - name: Make Migrations & Migrate
         run: |
+          chmod 777 ./app
           docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
           docker compose run --rm app sh -c "python manage.py migrate"
 #

@@ -29,6 +29,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     container_name: db
@@ -49,3 +51,8 @@ services:
     container_name: redis
     image: redis:7.0.5-alpine
     hostname: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
