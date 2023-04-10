@@ -41,7 +41,7 @@ jobs:
 
       - name: Create .env
         run:
-          cd /app/app && \
+          cd ./app/app && \
           echo POSTGRES_DB=dbname >> .env
           echo POSTGRES_USER=dbname >> .env
           echo POSTGRES_PASSWORD=dbname >> .env
