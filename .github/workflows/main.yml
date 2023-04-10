@@ -35,7 +35,6 @@ jobs:
 
       - name: Make Migrations & Migrate
         run: |
-          chmod u+w /app/ecommerce/migrations
           docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
           docker compose run --rm app sh -c "python manage.py migrate"
 
