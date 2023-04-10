@@ -36,7 +36,7 @@ jobs:
       - name: ls -la
         run: |
           ls -la
-          cd /app
+          cd ./app
           ls -la
 
       - name: Create .env
@@ -60,7 +60,7 @@ jobs:
       - name: ls -la
         run: |
           ls -la
-          cd /app/app
+          cd ./app/app
           ls -la
 
       - name: Make Migrations & Migrate
