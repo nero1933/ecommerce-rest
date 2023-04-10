@@ -22,6 +22,11 @@ RUN python -m venv /py && \
     chown -R app:app /vol && \
     chmod -R 755 /vol
 
+
+#RUN pip install virtualenv && virtualenv -p python /app/venv
+#RUN /app/venv/bin/pip install -r req.txt
+#RUN /app/venv/bin/python /app/code/manage.py makemigrations
+
 ENV PATH="/py/bin:$PATH"
 
 USER app

@@ -15,25 +15,44 @@ services:
       - ./app:/app
       - ./data/web:/vol/web
     environment:
-      - SECRET_KEY=devsecretkey
-      - DEBUG=1
+      - DEBUG=${DEBUG}
       - DB_HOST=db
-      - DB_NAME=devdb
-      - DB_USER=devuser
-      - DB_PASS=changeme
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - USER_CONFIRMATION_KEY=${USER_CONFIRMATION_KEY}
+      - PASSWORD_CONFIRMATION_KEY=${PASSWORD_CONFIRMATION_KEY}
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     container_name: db
     image: postgres:15-alpine
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=devdb
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "${DB_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     container_name: redis
     image: redis:7.0.5-alpine
     hostname: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
