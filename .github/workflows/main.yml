@@ -51,6 +51,9 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
+      - name: Start services
+        run: docker compose up
+
       - name: Check containers
         run: docker compose ps
 
@@ -64,8 +67,7 @@ jobs:
 #          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
 #          POSTGRES_DB: ${{ env.POSTGRES_DB }}
 
-      - name: Start services
-        run: docker compose up
+
 
       - name: Run tests
         run: docker compose run --rm app sh -c "python manage.py test"
