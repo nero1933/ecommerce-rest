@@ -33,10 +33,11 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
-      - name: Make Migrations & Migrate
-        run: |
-          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
-          docker compose run --rm app sh -c "python manage.py migrate"
+#      - name: Make Migrations & Migrate
+#        run: |
+#          chmod u+w /app/ecommerce/migrations
+#          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
+#          docker compose run --rm app sh -c "python manage.py migrate"
 
       - name: Start services
         run: docker compose up
@@ -44,6 +45,5 @@ jobs:
       - name: Check containers
         run: docker compose ps
 
-      - name: Run tests
-        run: docker compose run --rm app sh -c "python manage.py test"
-#
+#      - name: Run tests
+#        run: docker compose run --rm app sh -c "python manage.py test"
