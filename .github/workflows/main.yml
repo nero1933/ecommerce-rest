@@ -54,7 +54,9 @@ jobs:
           echo PASSWORD_CONFIRMATION_KEY=${PASSWORD_CONFIRMATION_KEY} >> .env
 
       - name: user
-        run: whoami
+        run: |
+          sudo adduser runner -aG app
+          mv ./app/.env ./app/app/.env
 
       - name: ls -la
         run: |
