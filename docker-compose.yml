@@ -14,6 +14,11 @@ services:
     volumes:
       - ./app:/app
       - ./data/web:/vol/web
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "${DB_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       - DEBUG=${DEBUG}
       - DB_HOST=db
@@ -27,8 +32,8 @@ services:
       - USER_CONFIRMATION_KEY=${USER_CONFIRMATION_KEY}
       - PASSWORD_CONFIRMATION_KEY=${PASSWORD_CONFIRMATION_KEY}
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
 
   db:
     container_name: db
