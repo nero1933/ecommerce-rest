@@ -69,7 +69,3 @@ jobs:
       - name: Display coverage badge in README
         run: |
           echo "[![Coverage](https://github.com/${{ github.repository }}/actions/artifacts/coverage-badge/raw?raw=true)](https://github.com/${{ github.repository }}/actions/artifacts/coverage-badge)"
-
-
-
-
