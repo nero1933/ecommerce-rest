@@ -46,8 +46,8 @@ services:
 #      interval: 5s
 #      timeout: 5s
 #      retries: 5
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'" ]
       interval: 10s
