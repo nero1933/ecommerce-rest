@@ -34,9 +34,9 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
-#      - name: Make Migrations & Migrate
-#        run: |
-#          chmod -R a+w ./app
+      - name: Make Migrations & Migrate
+        run: |
+          chmod -R a+w ./app
 #          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
 #          docker compose run --rm app sh -c "python manage.py migrate"
 
