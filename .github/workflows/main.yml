@@ -34,14 +34,14 @@ jobs:
       - name: Build Docker images
         run: docker compose build
 
-      - name: Make Migrations & Migrate
-        run: |
-          chmod -R a+w ./app
-          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
-          docker compose run --rm app sh -c "python manage.py migrate"
+#      - name: Make Migrations & Migrate
+#        run: |
+#          chmod -R a+w ./app
+#          docker compose run --rm app sh -c "python manage.py makemigrations ecommerce"
+#          docker compose run --rm app sh -c "python manage.py migrate"
 
-      - name: Run tests
-        run: docker compose run --rm app sh -c "python manage.py test"
+#      - name: Run tests
+#        run: docker compose run --rm app sh -c "python manage.py test"
 
       - name: Coverage py
         run: docker compose run --rm app sh -c "coverage run manage.py test -v 2 && coverage xml"
@@ -52,20 +52,12 @@ jobs:
           name: coverage
           path: coverage.xml
 
-#      - name: Show coverage summary
-#        run: |
-#          coverage report
-#          COVERAGE=$(coverage report --fail-under=90 | grep TOTAL | awk '{print $NF}')
-#          COLOR=green
-#          if (( $(echo "$COVERAGE < 90" | bc -l) )); then COLOR=red; fi
-#          curl -s "https://img.shields.io/badge/Coverage-${COVERAGE}%25-${COLOR}.svg" > coverage.svg
-#        shell: bash
-
-      - name: Generate coverage badge
+      - name: Show coverage summary
         run: docker compose run --rm app sh -c\
-          "COVERAGE=$(coverage report --fail-under=90 | grep TOTAL | awk '{print $NF}') &&\
+          "coverage report &&\
+          COVERAGE=$(coverage report --fail-under=90 | grep TOTAL | awk '{print $NF}') &&\
           COLOR=green &&\
-          if (( $(echo "$COVERAGE < 90" | bc -l) )); then COLOR=red; fi  &&\
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then COLOR=red; fi &&\
           curl -s "https://img.shields.io/badge/Coverage-${COVERAGE}%25-${COLOR}.svg" > coverage.svg"
 
       - name: Save coverage badge
@@ -73,6 +65,11 @@ jobs:
         with:
           name: coverage-badge
           path: coverage.svg
+
+      - name: Display coverage badge in README
+        run: |
+          echo "[![Coverage](https://github.com/${{ github.repository }}/actions/artifacts/coverage-badge/raw?raw=true)](https://github.com/${{ github.repository }}/actions/artifacts/coverage-badge)"
+
 
 
 
