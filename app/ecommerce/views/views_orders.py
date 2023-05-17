@@ -20,7 +20,7 @@ class OrderCreateAPIView(mixins.RetrieveModelMixin,
                          GenericAPIView):
 
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+#    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         shopping_cart_items = self.get_serializer_context()['shopping_cart_items']

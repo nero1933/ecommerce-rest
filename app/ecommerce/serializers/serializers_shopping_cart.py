@@ -2,10 +2,10 @@ from rest_framework import serializers
 
 from ..models.models_products import ProductItemSizeQuantity, ProductItem
 from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
-from ..utils.shopping_cart.shopping_cart import ShoppingCartItemUtil
+from ..utils.shopping_cart.shopping_cart import ShoppingCartItemSerializerUtil
 
 
-class ShoppingCartItemSerializer(ShoppingCartItemUtil, serializers.ModelSerializer):
+class ShoppingCartItemSerializer(ShoppingCartItemSerializerUtil, serializers.ModelSerializer):
     product_item_size_quantity = serializers.PrimaryKeyRelatedField(
         queryset=ProductItemSizeQuantity.objects.all()
         .select_related('product_item',
@@ -33,8 +33,11 @@ class ShoppingCartItemUpdateSerializer(ShoppingCartItemSerializer):
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
-    shopping_cart_item = ShoppingCartItemSerializer(many=True, read_only=True)
+#    shopping_cart_item = ShoppingCartItemSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ShoppingCart
-        fields = ['id', 'user', 'shopping_cart_item']
+        model = ShoppingCartItem
+        # fields = ['id', 'user',
+        #           #'shopping_cart_item'
+        #           ]
+        fields = '__all__'
