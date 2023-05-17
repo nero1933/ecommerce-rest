@@ -36,7 +36,7 @@ urlpatterns = [
     path('api/v1/accounts/reset_password_confirm/<str:token>', PasswordResetConfirmAPIView.as_view(), name='password_reset_confirm'),
 
 
-    path('api/v1/accounts/<int:user_id>/shopping_cart', ShoppingCartAPIView.as_view(), name='shopping_cart'),
+    path('api/v1/accounts/shopping_cart', ShoppingCartAPIView.as_view(), name='shopping_cart'),
     path('api/v1/accounts/create_order', OrderCreateAPIView.as_view(), name='create_order'),
     path('api/v1/accounts/orders/<int:order_id>/product/<int:order_item_id>/', include(router_reviews.urls)),
     path('api/v1/accounts/', include(router_accounts.urls)),
