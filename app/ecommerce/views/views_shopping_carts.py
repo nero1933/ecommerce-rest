@@ -1,25 +1,26 @@
+import uuid
+
 from rest_framework import viewsets
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
 
-from ..models.models_shopping_cart import ShoppingCart, ShoppingCartItem
 from ..serializers.serializers_shopping_cart import ShoppingCartItemSerializer, ShoppingCartSerializer, \
     ShoppingCartItemUpdateSerializer
+from ..utils.shopping_cart.shopping_cart import ShoppingCartItemViewUtil
 
 
-class ShoppingCartItemViewSet(viewsets.ModelViewSet):
+class ShoppingCartItemViewSet(ShoppingCartItemViewUtil, viewsets.ModelViewSet):
     serializer_class = ShoppingCartItemSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ShoppingCartItem.objects \
-            .select_related('product_item_size_quantity') \
-            .prefetch_related('product_item_size_quantity__product_item') \
-            .filter(cart__user=self.request.user)
+        return super().get_queryset()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['user'] = self.request.user
+        if self.request.user.is_authenticated:
+            context['user'] = self.request.user
+        else:
+            context['session_id'] = self.request.session['unauth']
+
         return context
 
     def get_serializer_class(self):
@@ -30,14 +31,8 @@ class ShoppingCartItemViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
-class ShoppingCartAPIView(generics.RetrieveAPIView):
+class ShoppingCartAPIView(ShoppingCartItemViewUtil, generics.ListAPIView):
     serializer_class = ShoppingCartSerializer
-    permission_classes = [IsAuthenticated]
-    lookup_field = 'user_id'
 
     def get_queryset(self):
-        queryset = ShoppingCart.objects.filter(user=self.request.user) \
-            .select_related('user') \
-            .prefetch_related('shopping_cart_item')
-
-        return queryset
+        return super().get_queryset()
