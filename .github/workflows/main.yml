@@ -42,3 +42,38 @@ jobs:
 
       - name: Run tests
         run: docker compose run --rm app sh -c "python manage.py test"
+
+      - name: Coverage py
+        run: docker compose run --rm app sh -c "coverage run manage.py test -v 2 && coverage xml"
+
+      - name: Save coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage.xml
+
+#      - name: Show coverage summary
+#        run: |
+#          coverage report
+#          COVERAGE=$(coverage report --fail-under=90 | grep TOTAL | awk '{print $NF}')
+#          COLOR=green
+#          if (( $(echo "$COVERAGE < 90" | bc -l) )); then COLOR=red; fi
+#          curl -s "https://img.shields.io/badge/Coverage-${COVERAGE}%25-${COLOR}.svg" > coverage.svg
+#        shell: bash
+
+      - name: Generate coverage badge
+        run: |
+          COVERAGE=$(coverage report --fail-under=90 | grep TOTAL | awk '{print $NF}')
+          COLOR=green
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then COLOR=red; fi
+          curl -s "https://img.shields.io/badge/Coverage-${COVERAGE}%25-${COLOR}.svg" > coverage.svg
+        shell: bash
+
+      - name: Save coverage badge
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-badge
+          path: coverage.svg
+
+
+
