@@ -1,5 +1,6 @@
 from urllib.parse import urlsplit
 
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.urls import resolve
 
@@ -12,15 +13,16 @@ from rest_framework.permissions import IsAuthenticated
 from ..models.models_orders import Order
 from ..models.models_shopping_cart import ShoppingCartItem
 from ..serializers.serializers_orders import OrderSerializer
+from ..utils.shopping_cart.shopping_cart import ShoppingCartItemViewUtil
 
 
-class OrderCreateAPIView(mixins.RetrieveModelMixin,
+class OrderCreateAPIView(ShoppingCartItemViewUtil,
+                         mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
                          mixins.CreateModelMixin,
                          GenericAPIView):
 
     serializer_class = OrderSerializer
-#    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         shopping_cart_items = self.get_serializer_context()['shopping_cart_items']
@@ -28,7 +30,8 @@ class OrderCreateAPIView(mixins.RetrieveModelMixin,
             return Response({'error': 'No items in shopping cart.'}, status=status.HTTP_400_BAD_REQUEST)
 
         super().create(request, *args, **kwargs)
-        return redirect(reverse('orders-detail', kwargs={"pk": self.order_id}))
+        # return redirect(reverse('orders-detail', kwargs={"pk": self.order_id}))
+        return redirect(reverse('orders-detail', kwargs={"pk": self.request.session['order_id']}))
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -37,26 +40,22 @@ class OrderCreateAPIView(mixins.RetrieveModelMixin,
         return context
 
     def perform_create(self, serializer):
+        """
+        Clear shopping cart after order is done.
+        """
         order = serializer.save()
-        self.order_id = order.pk
+        self.request.session['order_id'] = order.pk
+        # self.order_id = order.pk
         shopping_cart_items = self.get_serializer_context()['shopping_cart_items']
         shopping_cart_items.delete()
 
     def get_queryset(self):
-        """
-        Queryset contains all user's shopping cart items.
-        """
-        queryset = ShoppingCartItem.objects \
-            .select_related('product_item_size_quantity') \
-            .prefetch_related('product_item_size_quantity__product_item__discount') \
-            .filter(cart__user=self.request.user)
-
+        queryset = super().get_queryset()
         return queryset
 
 
 class OrderReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated, ]
     lookup_field = 'pk'
 
     def retrieve(self, request, *args, **kwargs):
@@ -74,7 +73,13 @@ class OrderReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
-        queryset = Order.objects.filter(user=self.request.user) \
-            .prefetch_related('order_item')
+        if self.request.user.is_authenticated:
+            return Order.objects.filter(user=self.request.user) \
+                .prefetch_related('order_item')
+        else:
+            return Order.objects.filter(pk=self.request.session['order_id']) \
+                .prefetch_related('order_item')
 
-        return queryset
+
+
+

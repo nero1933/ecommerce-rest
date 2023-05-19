@@ -19,7 +19,7 @@ class Address(models.Model):
     surname = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
     unit_number = models.CharField(max_length=255, blank=True, null=True)
-    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, unique=True)
+    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES)
     region = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     post_code = models.PositiveIntegerField()

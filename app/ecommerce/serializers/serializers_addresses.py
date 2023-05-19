@@ -15,7 +15,7 @@ class AddressSerializer(serializers.ModelSerializer):
                   'surname',
                   'street',
                   'unit_number',
-                  'country_id',
+                  'country',
                   'region',
                   'city',
                   'post_code',
@@ -37,8 +37,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
         # https://www.django-rest-framework.org/api-guide/serializers/#writing-create-methods-for-nested-representations
         # Writable nested representations
         address_data = validated_data.pop('address')
-        country = address_data.pop('country_id')
-        address = Address.objects.create(country_id=country.pk, **address_data)
+        address = Address.objects.create(**address_data)
         return UserAddress.objects.create(address=address, **validated_data)
 
     def update(self, instance, validated_data):
@@ -58,7 +57,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
         address.region = address_data.get('region', address.region)
         address.post_code = address_data.get('post_code', address.post_code)
         address.phone = address_data.get('phone', address.phone)
-        address.country_id = address_data.get('country_id', address.country)
+        address.country = address_data.get('country', address.country)
         address.save()
 
         return instance

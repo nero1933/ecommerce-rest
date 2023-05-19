@@ -1,3 +1,18 @@
+data = {
+    "email": 'test1@test.com',
+    "payment_method": 1,
+    "shipping_address": {
+        'name': 'r',
+        'surname': 'n',
+        'street': 'dm 15',
+        'country': 'Ukraine',
+        'region': 'ch',
+        'city': 'ch',
+        'post_code': 49000,
+        'phone': '+380956663321',
+    },
+    "shipping_method": 1,
+}
 from django.core.cache import cache
 
 from rest_framework import status

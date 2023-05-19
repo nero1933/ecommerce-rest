@@ -34,8 +34,18 @@ class TestOrderCreate(TestMixin):
         self.assertEqual(response.status_code, 201, 'Product must be successfully added')
 
         data = {
+            "email": 'test1@test.com',
             "payment_method": 1,
-            "shipping_address": 1,
+            "shipping_address": {
+                'name': 'r',
+                'surname': 'n',
+                'street': 'dm 15',
+                'country': 'Ukraine',
+                'region': 'ch',
+                'city': 'ch',
+                'post_code': 49000,
+                'phone': '+380956663321',
+            },
             "shipping_method": 1,
         }
 

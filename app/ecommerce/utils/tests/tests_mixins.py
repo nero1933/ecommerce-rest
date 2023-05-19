@@ -37,7 +37,7 @@ class TestMixin(APITestCase):
                 )
 
     def create_shipping_method(self):
-        self.shipping_method_1 = ShippingMethod.objects.create(delivery_company_name='DHL')
+        self.shipping_method_1 = 1
 
     def create_discount(self):
         start_date = datetime(2023, 3, 27, 11, 2, 40, 742332, timezone.utc)
@@ -148,9 +148,19 @@ class TestMixin(APITestCase):
 
     def create_order(self, user_data):
         data = {
+            "email": 'test1@test.com',
             "payment_method": 1,
-            "shipping_address": self.address_1.pk,
-            "shipping_method": self.shipping_method_1.pk,
+            "shipping_address": {
+                'name': 'r',
+                'surname': 'n',
+                'street': 'dm 15',
+                'country': 'Ukraine',
+                'region': 'ch',
+                'city': 'ch',
+                'post_code': 49000,
+                'phone': '+380956663321',
+            },
+            "shipping_method": 1,
         }
 
         response = self.get_response('POST', 'create_order', data=data, user_data=user_data, follow=True)

@@ -1,9 +1,9 @@
 import uuid
 
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
-from rest_framework.response import Response
 
-from ecommerce.models import ShoppingCart, ShoppingCartItem, ProductItem, ProductItemSizeQuantity
+from ecommerce.models import ShoppingCart, ShoppingCartItem, ProductItemSizeQuantity
 
 
 class ShoppingCartItemSerializerUtil:
@@ -33,7 +33,6 @@ class ShoppingCartItemSerializerUtil:
         elif session_id := self.context.get('session_id', None):
             cart = ShoppingCart.objects.get(session_id=session_id)
 
-        print(self.context.get('user', None), self.context.get('user', None))
         cart_items = ShoppingCartItem.objects.filter(cart=cart)\
             .select_related('product_item_size_quantity')
 
@@ -74,7 +73,7 @@ class ShoppingCartItemViewUtil:
         if not self.request.user.is_authenticated:
             try:
                 cart = ShoppingCart.objects.get(session_id=self.request.session['unauth'])
-            except:
+            except ObjectDoesNotExist:
                 self.request.session['unauth'] = str(uuid.uuid4())
                 cart = ShoppingCart.objects.create(session_id=self.request.session['unauth'])
         else:

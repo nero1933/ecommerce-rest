@@ -19,11 +19,16 @@ class Order(models.Model):
         TRANSFER_TO_THE_CARD = 2
         BANK_TRANSFER = 3
 
+    class ShippingMethods(enum.Enum):
+        UPS = 1
+        DHL = 2
+
     user = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
+    email = models.EmailField()
     order_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderMethods], default=1)
     shipping_address = models.ForeignKey('Address', on_delete=models.PROTECT)
-    shipping_method = models.ForeignKey('ShippingMethod', on_delete=models.PROTECT)
+    shipping_method = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in ShippingMethods], default=1)
     order_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
     order_status = models.PositiveSmallIntegerField(choices=[(x.value, x.name) for x in OrderStatus], default=1)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -37,11 +42,3 @@ class OrderItem(models.Model):
     product_item_size_quantity = models.ForeignKey('ProductItemSizeQuantity', related_name='ordered_product', on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1), ])
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.1), ])
-
-
-class ShippingMethod(models.Model):
-    delivery_company_name = models.CharField(max_length=100)
-
-    # def __str__(self):
-    #     return f'{self.delivery_company_name}'
-
