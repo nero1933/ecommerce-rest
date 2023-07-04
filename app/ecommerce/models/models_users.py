@@ -12,7 +12,7 @@ from .models_addresses import Address
 class UserProfileManager(BaseUserManager):
     """ Helps Django work with our custom user model. """
 
-    def create_user(self, email, name, phone, password=None):
+    def create_user(self, email, name, phone=None, password=None):
         """ Creates a new user profile object. """
 
         if not email:
@@ -37,6 +37,7 @@ class UserProfileManager(BaseUserManager):
         user.is_superuser = True
         user.is_staff = True
         user.is_active = True
+        user.is_guest = False
 
         user.save(using=self.db)
 
@@ -51,15 +52,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
-    phone = PhoneNumberField()
+    phone = PhoneNumberField(null=True)
     address = models.ManyToManyField(Address, through='UserAddress', related_name='address_to_user')
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_guest = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
 
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'phone']
+    REQUIRED_FIELDS = ['name']
 
     def get_full_name(self):
         """ Used to get a users full name. """

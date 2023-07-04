@@ -71,11 +71,12 @@ class ShoppingCartItemViewUtil:
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
-            try:
-                cart = ShoppingCart.objects.get(session_id=self.request.session['unauth'])
-            except ObjectDoesNotExist:
-                self.request.session['unauth'] = str(uuid.uuid4())
-                cart = ShoppingCart.objects.create(session_id=self.request.session['unauth'])
+            pass
+            # try:
+            #     cart = ShoppingCart.objects.get(session_id=self.request.session['unauth'])
+            # except (ObjectDoesNotExist, KeyError):
+            #     self.request.session['unauth'] = str(uuid.uuid4())
+            #     cart = ShoppingCart.objects.create(session_id=self.request.session['unauth'])
         else:
             cart = ShoppingCart.objects.get(user=self.request.user)
 

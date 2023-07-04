@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", 0)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))
@@ -211,7 +211,7 @@ SESSION_CACHE_ALIAS = "default"
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 
@@ -258,9 +258,15 @@ COVERAGE_MODULE_EXCLUDES = [
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
 
+# Celery
+# https://docs.celeryq.dev/en/stable/
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 
-# Custom variables
+
+# Custom variables (starts)
 
 DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL')
 
@@ -269,6 +275,8 @@ USER_CONFIRMATION_TIMEOUT = 300
 
 PASSWORD_CONFIRMATION_KEY = os.environ.get('PASSWORD_CONFIRMATION_KEY')
 PASSWORD_CONFIRMATION_TIMEOUT = 300
+
+# Custom variables (ends)
 
 
 

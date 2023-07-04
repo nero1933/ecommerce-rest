@@ -63,3 +63,68 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
+
+  worker:
+    container_name: celery
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A app worker --beat --loglevel=info
+    volumes:
+      - ./app:/app
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    links:
+      - redis
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  flower:
+    container_name: flower
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A app flower -l INFO
+    volumes:
+      - ./app:/app
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+    links:
+      - redis
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "5555:5555"
+
+#  beat:
+#    container_name: beat
+#    build:
+#      context: .
+#    hostname: beat
+#    entrypoint: celery
+#    command: -A app beat -l INFO
+#    volumes:
+#      - ./app:/app
+#    environment:
+#      - DEBUG=${DEBUG}
+#      - SECRET_KEY=${SECRET_KEY}
+#      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+#    links:
+#      - redis
+#    depends_on:
+#      - redis
